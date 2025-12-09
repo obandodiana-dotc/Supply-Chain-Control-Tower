@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SupplyChain Intelligence · ABC Clustering</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --bg: #020617;
+      --card: #0f172a;
+      --soft: #111827;
+      --accent: #38bdf8;
+      --accent2: #22c55e;
+      --accent3: #facc15;
+      --danger: #fb7185;
+      --text: #e5e7eb;
+      --text-soft: #9ca3af;
+      --radius: 18px;
+      --radius-sm: 10px;
+      --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #020617 0, #000 60%);
+      color: var(--text);
+      font-family: var(--font);
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 1100px;
+      padding: 18px 16px 40px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-logo-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      background: conic-gradient(from 180deg, #38bdf8, #a855f7, #f97316, #38bdf8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 18px rgba(56,189,248,0.7);
+    }
+
+    .nav-logo-inner {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 30% 0, #e5e7eb, #020617);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .nav-title {
+      font-size: 18px;
+      font-weight: 650;
+    }
+
+    .nav-sub {
+      font-size: 11px;
+      color: var(--text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .nav-links {
+      margin-left: auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .nav-links a {
+      color: var(--text-soft);
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.85);
+      border: 1px solid #1f2937;
+    }
+
+    .nav-links a.active {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-top: 4px;
+      background: linear-gradient(to right, #38bdf8, #a855f7);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      font-size: 14px;
+      color: var(--text-soft);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.5fr 1.4fr;
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 14px 16px 16px;
+      border: 1px solid #1f2937;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      margin-top: 8px;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      background: var(--accent);
+      border: none;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #0b1120;
+    }
+
+    canvas {
+      width: 100%;
+      max-width: 380px;
+      height: 260px;
+      border-radius: var(--radius-sm);
+      background: #020617;
+      border: 1px solid #1f2937;
+      display: block;
+      margin: 0 auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      margin-top: 8px;
+    }
+
+    th, td {
+      border-bottom: 1px solid #1f2937;
+      padding: 6px 6px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    th:first-child, td:first-child { text-align: left; }
+
+    th {
+      color: var(--text-soft);
+      font-weight: 600;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <!-- NAVBAR -->
+    <header class="nav">
+      <div class="nav-logo">
+        <div class="nav-logo-badge">
+          <div class="nav-logo-inner">SC</div>
+        </div>
+        <div>
+          <div class="nav-title">SupplyChain Intelligence App</div>
+          <div class="nav-sub">Inventory · Risk · Network</div>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html">Dashboard</a>
+        <a href="inventory.html">Inventory</a>
+        <a href="map.html">Logistics Map</a>
+        <a href="simulation.html">Simulation</a>
+        <a href="risk.html">Risk</a>
+        <a href="abc.html" class="active">ABC</a>
+      </nav>
+    </header>
+
+    <h1>Dynamic ABC Clustering</h1>
+    <p class="subtitle">
+      Segmentation of SKUs based on annual consumption value (demand × unit cost).
+    </p>
+
+    <div class="grid-2">
+      <!-- LEFT: TABLE -->
+      <section class="card">
+        <div class="card-title">SKU list · Annual consumption value</div>
+        <button class="btn" id="recalcBtn">Recalculate ABC</button>
+        <table>
+          <thead>
+            <tr>
+              <th>SKU</th>
+              <th>Demand</th>
+              <th>Unit cost</th>
+              <th>Annual value</th>
+              <th>Cum. %</th>
+              <th>Class</th>
+            </tr>
+          </thead>
+          <tbody id="abcBody"></tbody>
+        </table>
+      </section>
+
+      <!-- RIGHT: DONUT CHART -->
+      <section class="card">
+        <div class="card-title">ABC distribution</div>
+        <canvas id="abcCanvas" width="380" height="260"></canvas>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const abcCanvas = document.getElementById("abcCanvas");
+    const ctx = abcCanvas.getContext("2d");
+
+    let skus = [
+      { id: "OR-IC-001", demand: 12000, unitCost: 4.5 },
+      { id: "OR-CTRL-014", demand: 8000, unitCost: 18 },
+      { id: "OR-BATT-008", demand: 5000, unitCost: 32 },
+      { id: "OR-CBL-032", demand: 18000, unitCost: 2.2 },
+      { id: "OR-MOD-021", demand: 3000, unitCost: 55 },
+      { id: "OR-ACC-050", demand: 25000, unitCost: 1.1 },
+      { id: "OR-SPARE-013", demand: 1200, unitCost: 70 },
+      { id: "OR-MISC-099", demand: 900, unitCost: 8 }
+    ];
+
+    function calculateABC() {
+      // Compute annual value
+      skus.forEach(s => s.value = s.demand * s.unitCost);
+
+      // Sort by value desc
+      skus.sort((a, b) => b.value - a.value);
+
+      const total = skus.reduce((sum, s) => sum + s.value, 0);
+      let cumulative = 0;
+
+      skus.forEach(s => {
+        cumulative += s.value;
+        s.cumPerc = total > 0 ? (cumulative / total) * 100 : 0;
+        if (s.cumPerc <= 80) s.cls = "A";
+        else if (s.cumPerc <= 95) s.cls = "B";
+        else s.cls = "C";
+      });
+
+      renderTable();
+      renderDonut();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById("abcBody");
+      tbody.innerHTML = "";
+      skus.forEach(s => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${s.id}</td>
+          <td>${s.demand.toLocaleString()}</td>
+          <td>€${s.unitCost.toFixed(2)}</td>
+          <td>€${s.value.toLocaleString(undefined, {maximumFractionDigits:0})}</td>
+          <td>${s.cumPerc.toFixed(1)}%</td>
+          <td>${s.cls}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderDonut() {
+      const counts = { A: 0, B: 0, C: 0 };
+      skus.forEach(s => counts[s.cls]++);
+
+      const total = skus.length || 1;
+      const fracA = counts.A / total;
+      const fracB = counts.B / total;
+      const fracC = counts.C / total;
+
+      const cx = abcCanvas.width / 2;
+      const cy = abcCanvas.height / 2;
+      const rOuter = 90;
+      const rInner = 50;
+
+      ctx.clearRect(0, 0, abcCanvas.width, abcCanvas.height);
+
+      // Draw segments
+      let startAngle = -Math.PI / 2;
+
+      function drawSegment(frac, color) {
+        const endAngle = startAngle + frac * Math.PI * 2;
+        ctx.beginPath();
+        ctx.arc(cx, cy, rOuter, startAngle, endAngle);
+        ctx.arc(cx, cy, rInner, endAngle, startAngle, true);
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.fill();
+        startAngle = endAngle;
+      }
+
+      drawSegment(fracA, "#38bdf8"); // A
+      drawSegment(fracB, "#22c55e"); // B
+      drawSegment(fracC, "#f97316"); // C
+
+      // Labels
+      ctx.fillStyle = "#e5e7eb";
+      ctx.font = "11px system-ui";
+      ctx.textAlign = "left";
+      ctx.fillText(`A: ${counts.A} SKUs`, 20, 30);
+      ctx.fillText(`B: ${counts.B} SKUs`, 20, 46);
+      ctx.fillText(`C: ${counts.C} SKUs`, 20, 62);
+    }
+
+    document.getElementById("recalcBtn").addEventListener("click", calculateABC);
+
+    // Initial calculation
+    calculateABC();
+  </script>
+</body>
+</html>
