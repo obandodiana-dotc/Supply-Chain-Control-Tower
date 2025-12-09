@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supply Chain Control Tower · Demo</title>
+
+  <style>
+    /* =====================
+       VARIABLES & RESET
+    ====================== */
+    :root {
+      --bg: #050816;
+      --bg-soft: #0b1220;
+      --bg-card: #020617;
+      --bg-pill: #1e293b;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56,189,248,0.2);
+      --accent-2: #22c55e;
+      --accent-3: #facc15;
+      --danger: #fb7185;
+      --text-main: #e5e7eb;
+      --text-soft: #9ca3af;
+      --border-soft: #1f2937;
+      --shadow-soft: 0 22px 45px rgba(15,23,42,0.7);
+      --radius-xl: 18px;
+      --radius-full: 999px;
+      --transition-fast: 180ms ease-out;
+      --transition-med: 260ms ease-out;
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: var(--font-sans);
+      background: radial-gradient(circle at top, #0f172a 0, #020617 45%, #000 100%);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 1120px;
+      padding: 20px 16px 36px;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* =====================
+       LAYOUT GENERAL
+    ====================== */
+
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 14px;
+      background: radial-gradient(circle at top, #38bdf8, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 0 18px rgba(56,189,248,0.7);
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      color: var(--text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .tag {
+      margin-left: auto;
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(148,163,184,0.5);
+      font-size: 11px;
+      color: var(--text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15,23,42,0.6);
+      backdrop-filter: blur(10px);
+    }
+
+    .tag-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 10px rgba(34,197,94,0.8);
+    }
+
+    /* =====================
+       HERO / INTRO
+    ====================== */
+
+    .hero {
+      border-radius: 24px;
+      padding: 20px 18px 18px;
+      border: 1px solid #1f2937;
+      background:
+        radial-gradient(circle at 0 0, rgba(56,189,248,0.18), transparent 55%),
+        radial-gradient(circle at 100% 0, rgba(34,197,94,0.18), transparent 55%),
+        linear-gradient(to bottom right, #020617, #020617);
+      box-shadow: var(--shadow-soft);
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.3fr);
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 840px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .hero-main h1 {
+      font-size: clamp(24px, 4vw, 32px);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .hero-highlight {
+      background: linear-gradient(to right, #38bdf8, #a855f7, #f97316);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-main p {
+      font-size: 13px;
+      color: var(--text-soft);
+      max-width: 480px;
+      line-height: 1.6;
+    }
+
+    .hero-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .pill {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.85);
+      border: 1px solid rgba(148,163,184,0.6);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-soft);
+    }
+
+    .pill strong {
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    .hero-secondary {
+      border-radius: 18px;
+      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.16), transparent 60%);
+      border: 1px solid rgba(148,163,184,0.4);
+      padding: 10px 10px 12px;
+    }
+
+    .hero-secondary-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-soft);
+      margin-bottom: 10px;
+    }
+
+    .hero-secondary-title span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-secondary-title b {
+      color: var(--text-main);
+    }
+
+    .ticker {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      font-size: 11px;
+    }
+
+    @media (max-width: 640px) {
+      .ticker {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .ticker-card {
+      background: rgba(15,23,42,0.85);
+      border-radius: 12px;
+      border: 1px solid rgba(30,64,175,0.8);
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .ticker-label {
+      color: var(--text-soft);
+    }
+
+    .ticker-value {
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .ticker-trend {
+      font-size: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .trend-up {
+      color: var(--accent-2);
+    }
+
+    .trend-down {
+      color: var(--danger);
+    }
+
+    /* =====================
+       SUPPLY CHAIN MAP
+    ====================== */
+
+    .section {
+      margin-top: 20px;
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-soft);
+      margin-bottom: 10px;
+    }
+
+    .map-card {
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-soft);
+      background: radial-gradient(circle at 50% -30%, rgba(56,189,248,0.25), transparent 50%), #020617;
+      padding: 14px 16px 16px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 2fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 840px) {
+      .map-card {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .map-legend {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .map-legend h3 {
+      font-size: 13px;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+
+    .map-legend p {
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+
+    .legend-list {
+      list-style: none;
+      display: grid;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+    }
+
+    .dot-supplier { background: #22c55e; }
+    .dot-factory { background: #38bdf8; }
+    .dot-dc { background: #a855f7; }
+    .dot-store { background: #f97316; }
+    .dot-customer { background: #fde047; }
+
+    .map-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .flow-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+    }
+
+    .node {
+      flex: 1;
+      min-width: 120px;
+      padding: 10px 10px 9px;
+      border-radius: 16px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .node::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top, rgba(56,189,248,0.18), transparent 55%);
+      opacity: 0;
+      transition: opacity var(--transition-med);
+    }
+
+    .node:hover::after {
+      opacity: 1;
+    }
+
+    .node-title {
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .node-meta {
+      font-size: 11px;
+      color: var(--text-soft);
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .arrow {
+      align-self: center;
+      font-size: 18px;
+      color: var(--accent);
+    }
+
+    .flow-caption {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    /* =====================
+       TABS ANALÍTICOS (CSS ONLY)
+    ====================== */
+
+    .tabs {
+      margin-top: 24px;
+    }
+
+    .tabs-header {
+      display: inline-flex;
+      padding: 3px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.7);
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .tabs-header label {
+      position: relative;
+      z-index: 1;
+      font-size: 11px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      color: var(--text-soft);
+      transition: color var(--transition-fast);
+      user-select: none;
+    }
+
+    .tabs-header label span {
+      opacity: 0.85;
+    }
+
+    .tabs input[type="radio"] {
+      display: none;
+    }
+
+    .tabs-highlight {
+      position: absolute;
+      top: 3px;
+      bottom: 3px;
+      width: calc(33.333% - 6px);
+      border-radius: 999px;
+      background: linear-gradient(to right, #38bdf8, #a855f7);
+      transition: transform var(--transition-med);
+      box-shadow: 0 10px 25px rgba(56,189,248,0.4);
+    }
+
+    #tab-overview:checked ~ .tabs-header .tabs-highlight {
+      transform: translateX(0);
+    }
+    #tab-inventory:checked ~ .tabs-header .tabs-highlight {
+      transform: translateX(calc(100%));
+    }
+    #tab-transport:checked ~ .tabs-header .tabs-highlight {
+      transform: translateX(calc(200%));
+    }
+
+    #tab-overview:checked ~ .tabs-header label[for="tab-overview"],
+    #tab-inventory:checked ~ .tabs-header label[for="tab-inventory"],
+    #tab-transport:checked ~ .tabs-header label[for="tab-transport"] {
+      color: #0b1120;
+      font-weight: 600;
+    }
+
+    .tabs-content {
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-soft);
+      background: #020617;
+      padding: 14px 16px 16px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.8fr) minmax(0, 2fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 860px) {
+      .tabs-content {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .tab-panel {
+      display: none;
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    #tab-overview:checked ~ .tabs-content #panel-overview,
+    #tab-inventory:checked ~ .tabs-content #panel-inventory,
+    #tab-transport:checked ~ .tabs-content #panel-transport {
+      display: block;
+    }
+
+    .panel-title {
+      font-size: 13px;
+      color: var(--text-main);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .kpi-card {
+      border-radius: 14px;
+      background: radial-gradient(circle at top, rgba(56,189,248,0.15), transparent 60%);
+      border: 1px solid rgba(55,65,81,0.9);
+      padding: 8px 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .kpi-value {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .kpi-tag {
+      font-size: 10px;
+      color: var(--accent-2);
+    }
+
+    .risk-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .risk-box {
+      border-radius: 10px;
+      padding: 6px 7px;
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .risk-low {
+      background: rgba(34,197,94,0.16);
+      border: 1px solid rgba(34,197,94,0.7);
+    }
+
+    .risk-med {
+      background: rgba(250,204,21,0.12);
+      border: 1px solid rgba(234,179,8,0.7);
+    }
+
+    .risk-high {
+      background: rgba(248,113,113,0.16);
+      border: 1px solid rgba(248,113,113,0.8);
+    }
+
+    .risk-label {
+      color: var(--text-soft);
+    }
+
+    .risk-value {
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .panel-list {
+      margin-top: 6px;
+      list-style: disc;
+      padding-left: 18px;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .shipments {
+      display: grid;
+      gap: 8px;
+    }
+
+    .shipment-card {
+      border-radius: 12px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(30,64,175,0.8);
+      padding: 7px 9px;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 6px;
+      font-size: 11px;
+    }
+
+    @media (max-width: 520px) {
+      .shipment-card {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .shipment-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .shipment-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .shipment-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      color: var(--text-soft);
+    }
+
+    .badge {
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 10px;
+      border: 1px solid rgba(148,163,184,0.7);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .badge-green {
+      border-color: rgba(34,197,94,0.8);
+      color: #bbf7d0;
+    }
+
+    .badge-yellow {
+      border-color: rgba(234,179,8,0.8);
+      color: #fef9c3;
+    }
+
+    .badge-red {
+      border-color: rgba(248,113,113,0.9);
+      color: #fee2e2;
+    }
+
+    .small-label {
+      font-size: 10px;
+      color: var(--text-soft);
+    }
+
+    .small-value {
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* =====================
+       FOOTER MINI
+    ====================== */
+
+    .footer {
+      margin-top: 18px;
+      font-size: 11px;
+      color: var(--text-soft);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: space-between;
+    }
+
+    .footer span strong {
+      color: var(--accent);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <!-- HEADER -->
+    <header class="header">
+      <div class="logo">
+        <div class="logo-badge">📦</div>
+        <div class="logo-text">
+          <div class="logo-title">GreenFlow Supply Chain</div>
+          <div class="logo-sub">Inventory · Transport · Risk</div>
+        </div>
+      </div>
+      <div class="tag">
+        <span class="tag-dot"></span>
+        <span>Demo · Supply Chain Control Tower</span>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-main">
+        <h1>
+          Simulador visual de <span class="hero-highlight">políticas de inventario</span> y flujo logístico.
+        </h1>
+        <p>
+          Esta demo muestra cómo podríamos monitorizar una cadena de suministro de extremo a extremo:
+          desde proveedores hasta cliente final, conectando niveles de inventario, riesgo y desempeño
+          de transporte en un solo panel.
+        </p>
+
+        <div class="hero-pills">
+          <div class="pill">🎯 <strong>Fill rate</strong> vs. costo total</div>
+          <div class="pill">🧊 <strong>Safety stock</strong> por nodo</div>
+          <div class="pill">🚚 <strong>OTIF</strong> de transporte</div>
+          <div class="pill">🌱 <strong>Huella de CO₂</strong> conceptual</div>
+        </div>
+      </div>
+
+      <aside class="hero-secondary">
+        <div class="hero-secondary-title">
+          <span>Supply Chain Snapshot</span>
+          <span><b>Today</b> · Concept demo</span>
+        </div>
+        <div class="ticker">
+          <div class="ticker-card">
+            <div class="ticker-label">Portfolio fill rate</div>
+            <div class="ticker-value">96.3%</div>
+            <div class="ticker-trend trend-up">▲ +1.2 pts vs. last week</div>
+          </div>
+          <div class="ticker-card">
+            <div class="ticker-label">Avg. inventory days</div>
+            <div class="ticker-value">38 días</div>
+            <div class="ticker-trend trend-down">▼ -4 días</div>
+          </div>
+          <div class="ticker-card">
+            <div class="ticker-label">OTIF shipments</div>
+            <div class="ticker-value">92.5%</div>
+            <div class="ticker-trend trend-up">▲ +0.7 pts</div>
+          </div>
+          <div class="ticker-card">
+            <div class="ticker-label">Backorders activos</div>
+            <div class="ticker-value">12 SKUs</div>
+            <div class="ticker-trend trend-down">▼ -5 vs. ayer</div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- SUPPLY CHAIN MAP -->
+    <section class="section">
+      <h2 class="section-title">Mapa conceptual de la cadena de suministro</h2>
+      <div class="map-card">
+        <div class="map-legend">
+          <h3>Flujo de extremo a extremo</h3>
+          <p>
+            Visualizamos una cadena clásica: proveedor → fábrica → centro de distribución → tienda → cliente final.
+            Cada nodo podría conectarse a datos reales de inventario, lead time y riesgo.
+          </p>
+          <ul class="legend-list">
+            <li class="legend-item">
+              <span class="legend-dot dot-supplier"></span>
+              <span>Proveedor: disponibilidad de materia prima</span>
+            </li>
+            <li class="legend-item">
+              <span class="legend-dot dot-factory"></span>
+              <span>Fábrica: WIP y producción terminada</span>
+            </li>
+            <li class="legend-item">
+              <span class="legend-dot dot-dc"></span>
+              <span>Centro de distribución: stock de ciclo y seguridad</span>
+            </li>
+            <li class="legend-item">
+              <span class="legend-dot dot-store"></span>
+              <span>Tienda: cumplimiento de OTIF y rotación</span>
+            </li>
+            <li class="legend-item">
+              <span class="legend-dot dot-customer"></span>
+              <span>Cliente: nivel de servicio percibido</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="map-flow">
+          <div class="flow-row">
+            <div class="node">
+              <div class="node-title">
+                <span class="legend-dot dot-supplier"></span> Proveedor
+              </div>
+              <div class="node-meta">
+                <span>Fill rate inbound: <strong>97%</strong></span>
+                <span>L.T. prom: <strong>12 días</strong></span>
+              </div>
+            </div>
+            <div class="arrow">➜</div>
+            <div class="node">
+              <div class="node-title">
+                <span class="legend-dot dot-factory"></span> Fábrica
+              </div>
+              <div class="node-meta">
+                <span>Capacidad: <strong>82%</strong></span>
+                <span>WIP: <strong>3.4 días</strong></span>
+              </div>
+            </div>
+            <div class="arrow">➜</div>
+            <div class="node">
+              <div class="node-title">
+                <span class="legend-dot dot-dc"></span> DC Central
+              </div>
+              <div class="node-meta">
+                <span>Safety stock: <strong>18 días</strong></span>
+                <span>Fill rate: <strong>95.8%</strong></span>
+              </div>
+            </div>
+          </div>
+          <div class="flow-row">
+            <div class="node">
+              <div class="node-title">
+                <span class="legend-dot dot-store"></span> Tienda urbana
+              </div>
+              <div class="node-meta">
+                <span>Rotación: <strong>x9.2</strong></span>
+                <span>Stock-out: <strong>2.1%</strong></span>
+              </div>
+            </div>
+            <div class="arrow">➜</div>
+            <div class="node">
+              <div class="node-title">
+                <span class="legend-dot dot-customer"></span> Cliente final
+              </div>
+              <div class="node-meta">
+                <span>NPS: <strong>+42</strong></span>
+                <span>Devoluciones: <strong>1.8%</strong></span>
+              </div>
+            </div>
+          </div>
+          <p class="flow-caption">
+            Cada tarjeta podría conectarse a un microservicio diferente (inventario, transporte, demanda) para construir
+            una verdadera “control tower” de supply chain.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TABS ANALÍTICOS -->
+    <section class="tabs">
+      <input type="radio" name="tab" id="tab-overview" checked />
+      <input type="radio" name="tab" id="tab-inventory" />
+      <input type="radio" name="tab" id="tab-transport" />
+
+      <div class="tabs-header">
+        <div class="tabs-highlight"></div>
+        <label for="tab-overview"><span>📊 Overview</span></label>
+        <label for="tab-inventory"><span>📦 Inventario</span></label>
+        <label for="tab-transport"><span>🚚 Transporte</span></label>
+      </div>
+
+      <div class="tabs-content">
+        <!-- PANEL OVERVIEW -->
+        <div id="panel-overview" class="tab-panel">
+          <div class="panel-title">Resumen ejecutivo de la cadena</div>
+          <p>
+            Este panel resume el desempeño global mezclando nivel de servicio, inventario y confiabilidad de transporte.
+            Es el tipo de vista que usaría un director de operaciones para decidir si sube o baja el nivel de stock.
+          </p>
+
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-label">Fill rate portafolio</div>
+              <div class="kpi-value">96.3%</div>
+              <div class="kpi-tag">Objetivo: 95%</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Costo por unidad demandada</div>
+              <div class="kpi-value">€1.42</div>
+              <div class="kpi-tag">Incluye holding + pedidos + stockout</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Días de inventario</div>
+              <div class="kpi-value">38 días</div>
+              <div class="kpi-tag">Reducción frente a 42 días anteriores</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Emisiones estimadas</div>
+              <div class="kpi-value">-6.5%</div>
+              <div class="kpi-tag">vs. último trimestre</div>
+            </div>
+          </div>
+
+          <ul class="panel-list">
+            <li>Un fill rate alto con días de inventario moderados indica una buena combinación de políticas (EOQ / Min–Max).</li>
+            <li>La reducción de emisiones viene del uso de rutas más llenas en transporte y menos envíos urgentes.</li>
+            <li>Este panel se podría conectar a un simulador de escenarios para comparar “más servicio vs. menos costo”.</li>
+          </ul>
+        </div>
+
+        <!-- PANEL INVENTORY -->
+        <div id="panel-inventory" class="tab-panel">
+          <div class="panel-title">Inventario & riesgo</div>
+          <p>
+            Aquí visualizamos el riesgo sobre el inventario: qué tan expuestos estamos a stockout o excesos de stock
+            en distintos puntos de la red.
+          </p>
+
+          <div class="risk-grid">
+            <div class="risk-box risk-low">
+              <div class="risk-label">Proveedor</div>
+              <div class="risk-value">Riesgo bajo</div>
+              <div class="small-label">Disponibilidad materia prima</div>
+            </div>
+            <div class="risk-box risk-med">
+              <div class="risk-label">Fábrica</div>
+              <div class="risk-value">Riesgo medio</div>
+              <div class="small-label">Cuellos de botella en una línea</div>
+            </div>
+            <div class="risk-box risk-high">
+              <div class="risk-label">DC Central</div>
+              <div class="risk-value">Riesgo alto</div>
+              <div class="small-label">SKUs A con stockout recurrente</div>
+            </div>
+            <div class="risk-box risk-med">
+              <div class="risk-label">Tiendas</div>
+              <div class="risk-value">Riesgo medio</div>
+              <div class="small-label">Cobertura dispar entre regiones</div>
+            </div>
+          </div>
+
+          <ul class="panel-list">
+            <li>Se podrían mapear SKUs A/B/C y mostrar dónde la política actual no alcanza el nivel de servicio deseado.</li>
+            <li>El DC suele concentrar gran parte del stock de seguridad; optimizar allí tiene alto impacto.</li>
+            <li>Una siguiente iteración podría incorporar clasificación ABC y sugerir niveles de servicio por segmento.</li>
+          </ul>
+        </div>
+
+        <!-- PANEL TRANSPORT -->
+        <div id="panel-transport" class="tab-panel">
+          <div class="panel-title">Transporte & OTIF</div>
+          <p>
+            La dimensión de transporte conecta inventario con experiencia del cliente: un buen OTIF
+            (On Time In Full) asegura que la promesa de entrega se cumpla.
+          </p>
+
+          <div class="shipments">
+            <div class="shipment-card">
+              <div class="shipment-main">
+                <div class="shipment-title">Ruta DC → Tienda urbana 01</div>
+                <div class="shipment-meta">
+                  <span>Lead time objetivo: 24h</span>
+                  <span>Modo: carretera</span>
+                </div>
+              </div>
+              <div>
+                <div class="badge badge-green">OTIF 98%</div>
+                <div class="small-label">Retrasos > 24h: <span class="small-value">1.2%</span></div>
+              </div>
+            </div>
+
+            <div class="shipment-card">
+              <div class="shipment-main">
+                <div class="shipment-title">Ruta Fábrica → DC Norte</div>
+                <div class="shipment-meta">
+                  <span>Lead time objetivo: 3 días</span>
+                  <span>Modo: multimodal</span>
+                </div>
+              </div>
+              <div>
+                <div class="badge badge-yellow">OTIF 91%</div>
+                <div class="small-label">Causa principal: <span class="small-value">congestión fronteriza</span></div>
+              </div>
+            </div>
+
+            <div class="shipment-card">
+              <div class="shipment-main">
+                <div class="shipment-title">Ruta Proveedor clave → Fábrica</div>
+                <div class="shipment-meta">
+                  <span>Lead time objetivo: 10 días</span>
+                  <span>Modo: marítimo</span>
+                </div>
+              </div>
+              <div>
+                <div class="badge badge-red">OTIF 78%</div>
+                <div class="small-label">Impacto: <span class="small-value">aumento safety stock + stockout</span></div>
+              </div>
+            </div>
+          </div>
+
+          <ul class="panel-list">
+            <li>Las rutas con bajo OTIF obligan a subir el stock de seguridad o aceptar más riesgo de ruptura.</li>
+            <li>Con datos reales, este panel podría mostrarse por transportista, corredor o modo (marítimo, aéreo, terrestre).</li>
+            <li>Integrado con un simulador de inventario, permitiría entender el impacto financiero de mejorar el OTIF.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <span>Concepto de demo creado para practicar <strong>HTML/CSS</strong> con temática de <strong>Supply Chain</strong>.</span>
+      <span>Listo para evolucionar a un dashboard real con datos y simulaciones.</span>
+    </footer>
+  </div>
+</body>
+</html>
