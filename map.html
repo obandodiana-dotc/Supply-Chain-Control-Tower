@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SupplyChain Intelligence · Logistics Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    :root {
+      --bg: #020617;
+      --card: #0f172a;
+      --soft: #111827;
+      --accent: #38bdf8;
+      --accent2: #22c55e;
+      --accent3: #facc15;
+      --danger: #fb7185;
+      --text: #e5e7eb;
+      --text-soft: #9ca3af;
+      --radius: 18px;
+      --radius-sm: 10px;
+      --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #020617 0, #000 60%);
+      color: var(--text);
+      font-family: var(--font);
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 1100px;
+      padding: 18px 16px 40px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-logo-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      background: conic-gradient(from 180deg, #38bdf8, #a855f7, #f97316, #38bdf8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 18px rgba(56,189,248,0.7);
+    }
+
+    .nav-logo-inner {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 30% 0, #e5e7eb, #020617);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .nav-title {
+      font-size: 18px;
+      font-weight: 650;
+    }
+
+    .nav-sub {
+      font-size: 11px;
+      color: var(--text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .nav-links {
+      margin-left: auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .nav-links a {
+      color: var(--text-soft);
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.85);
+      border: 1px solid #1f2937;
+    }
+
+    .nav-links a.active {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-top: 4px;
+      background: linear-gradient(to right, #38bdf8, #a855f7);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .subtitle {
+      margin-top: 6px;
+      font-size: 14px;
+      color: var(--text-soft);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 14px 16px 16px;
+      border: 1px solid #1f2937;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .map {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 8px;
+    }
+
+    .map-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .node {
+      flex: 1;
+      min-width: 120px;
+      padding: 10px;
+      border-radius: 16px;
+      background: var(--soft);
+      border: 1px solid #1f2937;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.16s ease-out, box-shadow 0.16s ease-out, border-color 0.16s ease-out;
+    }
+
+    .node span {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .node small {
+      display: block;
+      font-size: 11px;
+      color: var(--text-soft);
+      margin-top: 2px;
+    }
+
+    .node.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(56,189,248,0.4);
+      transform: translateY(-2px);
+    }
+
+    .node::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: 1px solid rgba(56,189,248,0.3);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.16s ease-out;
+    }
+
+    .node.active::after { opacity: 1; }
+
+    .arrow {
+      font-size: 20px;
+      color: var(--accent);
+    }
+
+    .risk-badge {
+      display: inline-block;
+      margin-top: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+    }
+
+    .low { background: rgba(34,197,94,0.18); color: #bbf7d0; }
+    .med { background: rgba(250,204,21,0.18); color: #fef9c3; }
+    .high { background: rgba(248,113,113,0.2); color: #fee2e2; }
+
+    .detail-item {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .detail-item strong { color: var(--text); }
+
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <!-- NAVBAR -->
+    <header class="nav">
+      <div class="nav-logo">
+        <div class="nav-logo-badge">
+          <div class="nav-logo-inner">SC</div>
+        </div>
+        <div>
+          <div class="nav-title">SupplyChain Intelligence App</div>
+          <div class="nav-sub">Inventory · Risk · Network</div>
+        </div>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html">Dashboard</a>
+        <a href="inventory.html">Inventory</a>
+        <a href="map.html" class="active">Logistics Map</a>
+        <a href="simulation.html">Simulation</a>
+        <a href="risk.html">Risk</a>
+        <a href="abc.html">ABC</a>
+      </nav>
+    </header>
+
+    <h1>Interactive Logistics Network Map</h1>
+    <p class="subtitle">
+      Click any node in the chain to see its KPIs and contribution to overall risk.
+    </p>
+
+    <div class="grid-2">
+      <!-- LEFT: MAP -->
+      <section class="card">
+        <div class="card-title">Physical flow · Supplier → Factory → DC → Store → Customer</div>
+        <div class="map">
+          <div class="map-row">
+            <div class="node" data-node="supplier">
+              <span>Supplier</span>
+              <small>Raw materials & components</small>
+              <span class="risk-badge low">Low risk</span>
+            </div>
+            <div class="arrow">➜</div>
+            <div class="node" data-node="factory">
+              <span>Factory</span>
+              <small>Assembly & production</small>
+              <span class="risk-badge med">Medium risk</span>
+            </div>
+            <div class="arrow">➜</div>
+            <div class="node" data-node="dc">
+              <span>Central DC</span>
+              <small>Inventory concentration</small>
+              <span class="risk-badge high">High risk</span>
+            </div>
+          </div>
+          <div class="map-row">
+            <div class="node" data-node="store">
+              <span>Urban Store</span>
+              <small>Last-mile availability</small>
+              <span class="risk-badge med">Medium risk</span>
+            </div>
+            <div class="arrow">➜</div>
+            <div class="node" data-node="customer">
+              <span>Customer</span>
+              <small>Service level & returns</small>
+              <span class="risk-badge low">Low risk</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: DETAILS -->
+      <section class="card">
+        <div class="card-title">Node KPIs & Risk Contribution</div>
+        <div class="detail-item">
+          <strong>Node:</strong> <span id="dNode">–</span>
+        </div>
+        <div class="detail-item">
+          <strong>Role in the network:</strong> <span id="dRole">–</span>
+        </div>
+        <div class="detail-item">
+          <strong>Typical KPIs:</strong>
+          <ul id="dKpis" style="margin-left:16px; margin-top:4px;"></ul>
+        </div>
+        <div class="detail-item">
+          <strong>Risk level:</strong> <span id="dRiskLabel">–</span>
+        </div>
+        <div class="detail-item">
+          <strong>How it affects inventory:</strong>
+          <p id="dImpact">–</p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const nodesData = {
+      supplier: {
+        name: "Supplier",
+        role: "Provides critical components and raw materials.",
+        kpis: [
+          "Inbound OTIF",
+          "Lead time reliability",
+          "MOQ flexibility",
+          "Quality incidents"
+        ],
+        riskLabel: "Low (most suppliers diversified)",
+        impact: "Unreliable suppliers force higher safety stock across the chain " +
+                "or lead to production stops, depending on dual-sourcing strategy."
+      },
+      factory: {
+        name: "Factory",
+        role: "Transforms components into finished goods.",
+        kpis: [
+          "Capacity utilization",
+          "Production cycle time",
+          "Schedule adherence",
+          "Scrap rate"
+        ],
+        riskLabel: "Medium (bottlenecks in one line)",
+        impact: "If production is unstable, planners compensate with additional " +
+                "finished goods inventory at the DC to protect customer service."
+      },
+      dc: {
+        name: "Central DC",
+        role: "Aggregates and dispatches inventory to multiple markets.",
+        kpis: [
+          "Inventory accuracy",
+          "Order cycle time",
+          "Fill rate",
+          "Pick/pack productivity"
+        ],
+        riskLabel: "High (inventory and service concentration)",
+        impact: "The DC defines the real service level: poor DC execution leads to " +
+                "stockouts in stores even if total stock exists, increasing lost sales."
+      },
+      store: {
+        name: "Urban Store",
+        role: "Final availability point before the end customer.",
+        kpis: [
+          "On-shelf availability",
+          "Sell-through rate",
+          "Shrinkage",
+          "Local forecast accuracy"
+        ],
+        riskLabel: "Medium (demand variability, limited storage)",
+        impact: "Highly variable local demand means stores depend heavily on " +
+                "replenishment frequency and DC performance to avoid stockouts."
+      },
+      customer: {
+        name: "Customer",
+        role: "Receives products and experiences the final service level.",
+        kpis: [
+          "Order fill rate",
+          "On-time delivery",
+          "Return rate",
+          "Net Promoter Score (NPS)"
+        ],
+        riskLabel: "Low (result of upstream performance)",
+        impact: "Customer perception consolidates all upstream performance. " +
+                "Chronic issues can lead to lost loyalty and long-term revenue impact."
+      }
+    };
+
+    const nodes = document.querySelectorAll(".node");
+    const dNode = document.getElementById("dNode");
+    const dRole = document.getElementById("dRole");
+    const dKpis = document.getElementById("dKpis");
+    const dRiskLabel = document.getElementById("dRiskLabel");
+    const dImpact = document.getElementById("dImpact");
+
+    function selectNode(key) {
+      const data = nodesData[key];
+      if (!data) return;
+
+      nodes.forEach(n => n.classList.remove("active"));
+      const active = document.querySelector(`.node[data-node="${key}"]`);
+      if (active) active.classList.add("active");
+
+      dNode.textContent = data.name;
+      dRole.textContent = data.role;
+      dRiskLabel.textContent = data.riskLabel;
+      dImpact.textContent = data.impact;
+
+      dKpis.innerHTML = "";
+      data.kpis.forEach(k => {
+        const li = document.createElement("li");
+        li.textContent = k;
+        dKpis.appendChild(li);
+      });
+    }
+
+    nodes.forEach(n => {
+      n.addEventListener("click", () => {
+        const key = n.getAttribute("data-node");
+        selectNode(key);
+      });
+    });
+
+    // Default selection
+    selectNode("dc");
+  </script>
+</body>
+</html>
