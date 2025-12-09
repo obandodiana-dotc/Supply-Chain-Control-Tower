@@ -1,924 +1,240 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Orion Logistics · Supply Chain & Inventarios</title>
-
-  <style>
-    :root {
-      --bg: #020617;
-      --bg-card: rgba(15,23,42,0.96);
-      --bg-soft: rgba(15,23,42,0.9);
-      --accent: #38bdf8;
-      --accent-2: #22c55e;
-      --accent-3: #facc15;
-      --danger: #fb7185;
-      --text-main: #e5e7eb;
-      --text-soft: #9ca3af;
-      --border-soft: #1f2937;
-      --radius-xl: 18px;
-      --radius-full: 999px;
-      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      --shadow-soft: 0 22px 45px rgba(15,23,42,0.85);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      min-height: 100vh;
-      font-family: var(--font-sans);
-      background: radial-gradient(circle at top, #020617 0, #000 60%);
-      color: var(--text-main);
-      display: flex;
-      justify-content: center;
-      position: relative;
-      overflow-x: hidden;
-    }
-
-    /* Fondo tipo grid */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: -200px;
-      background-image:
-        linear-gradient(rgba(15,23,42,0.55) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(15,23,42,0.55) 1px, transparent 1px);
-      background-size: 40px 40px;
-      opacity: 0.6;
-      z-index: -2;
-      animation: gridMove 22s linear infinite;
-    }
-
-    body::after {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(circle at 10% 0, rgba(56,189,248,0.22), transparent 60%),
-        radial-gradient(circle at 90% 100%, rgba(180,83,9,0.3), transparent 65%);
-      mix-blend-mode: screen;
-      opacity: 0.9;
-      z-index: -1;
-    }
-
-    @keyframes gridMove {
-      from { transform: translate3d(0,0,0); }
-      to   { transform: translate3d(40px,40px,0); }
-    }
-
-    .page {
-      width: 100%;
-      max-width: 1120px;
-      padding: 22px 16px 34px;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* HEADER */
-
-    .header {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .logo-badge-wrapper {
-      position: relative;
-    }
-
-    .logo-badge-wrapper::before {
-      content: "";
-      position: absolute;
-      inset: -8px;
-      border-radius: 22px;
-      border: 1px solid rgba(56,189,248,0.3);
-      box-shadow: 0 0 25px rgba(56,189,248,0.7);
-      opacity: 0.45;
-      animation: pulseGlow 2.4s ease-in-out infinite;
-    }
-
-    @keyframes pulseGlow {
-      0%,100% { transform: scale(1); opacity: 0.35; }
-      50% { transform: scale(1.05); opacity: 0.8; }
-    }
-
-    .logo-badge {
-      width: 40px;
-      height: 40px;
-      border-radius: 14px;
-      background: conic-gradient(from 180deg, #38bdf8, #a855f7, #f97316, #38bdf8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 18px rgba(56,189,248,0.7);
-    }
-
-    .logo-inner {
-      width: 32px;
-      height: 32px;
-      border-radius: 12px;
-      background: radial-gradient(circle at 30% 0, #e5e7eb, #020617);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-    }
-
-    .logo-text {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .logo-title {
-      font-size: 19px;
-      font-weight: 650;
-    }
-
-    .logo-sub {
-      font-size: 11px;
-      color: var(--text-soft);
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-    }
-
-    .tag {
-      margin-left: auto;
-      padding: 6px 12px;
-      border-radius: var(--radius-full);
-      border: 1px solid rgba(148,163,184,0.5);
-      font-size: 11px;
-      color: var(--text-soft);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(15,23,42,0.7);
-      backdrop-filter: blur(14px);
-    }
-
-    .tag-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: #22c55e;
-      box-shadow: 0 0 10px rgba(34,197,94,0.8);
-    }
-
-    /* HERO */
-
-    .hero {
-      border-radius: 24px;
-      padding: 20px 18px 18px;
-      border: 1px solid rgba(31,41,55,0.9);
-      background:
-        linear-gradient(to bottom right, rgba(15,23,42,0.95), rgba(15,23,42,0.96)),
-        radial-gradient(circle at 0 0, rgba(56,189,248,0.22), transparent 55%);
-      box-shadow: var(--shadow-soft);
-      display: grid;
-      grid-template-columns: minmax(0, 3fr) minmax(0, 2.4fr);
-      gap: 18px;
-      margin-bottom: 22px;
-      backdrop-filter: blur(15px);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      border: 1px solid rgba(148,163,184,0.25);
-      pointer-events: none;
-      mix-blend-mode: screen;
-      opacity: 0.3;
-    }
-
-    @media (max-width: 840px) {
-      .hero {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-
-    .hero-main h1 {
-      font-size: clamp(24px, 4vw, 32px);
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-
-    .hero-highlight {
-      background: linear-gradient(to right, #38bdf8, #a855f7, #f97316);
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-
-    .hero-main p {
-      font-size: 13px;
-      color: var(--text-soft);
-      max-width: 480px;
-      line-height: 1.6;
-    }
-
-    .hero-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .pill {
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      background: rgba(15,23,42,0.85);
-      border: 1px solid rgba(148,163,184,0.6);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--text-soft);
-      transition: transform 0.18s ease-out, box-shadow 0.18s ease-out, border-color 0.18s ease-out;
-    }
-
-    .pill strong {
-      color: #e5e7eb;
-      font-weight: 500;
-    }
-
-    .pill:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 10px 26px rgba(15,23,42,0.8);
-      border-color: rgba(56,189,248,0.8);
-    }
-
-    .hero-secondary {
-      border-radius: 18px;
-      background: radial-gradient(circle at 0 0, rgba(56,189,248,0.16), transparent 60%);
-      border: 1px solid rgba(148,163,184,0.4);
-      padding: 10px 10px 12px;
-      backdrop-filter: blur(18px);
-    }
-
-    .hero-secondary-title {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 12px;
-      color: var(--text-soft);
-      margin-bottom: 10px;
-    }
-
-    .hero-secondary-title b {
-      color: var(--text-main);
-    }
-
-    .ticker {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 8px;
-      font-size: 11px;
-    }
-
-    @media (max-width: 640px) {
-      .ticker {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    .ticker-card {
-      background: rgba(15,23,42,0.9);
-      border-radius: 12px;
-      border: 1px solid rgba(30,64,175,0.8);
-      padding: 6px 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      transition: transform 0.18s ease-out, box-shadow 0.18s ease-out;
-    }
-
-    .ticker-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 28px rgba(15,23,42,0.9);
-    }
-
-    .ticker-label {
-      color: var(--text-soft);
-    }
-
-    .ticker-value {
-      font-weight: 600;
-      font-size: 13px;
-    }
-
-    .ticker-trend {
-      font-size: 10px;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .trend-up { color: var(--accent-2); }
-    .trend-down { color: var(--danger); }
-
-    /* SECCIÓN INVENTARIO REAL */
-
-    .section {
-      margin-top: 20px;
-      margin-bottom: 16px;
-    }
-
-    .section-title {
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: var(--text-soft);
-      margin-bottom: 10px;
-    }
-
-    .inventory-card {
-      border-radius: var(--radius-xl);
-      background: var(--bg-card);
-      border: 1px solid var(--border-soft);
-      padding: 14px 16px 16px;
-      box-shadow: 0 18px 40px rgba(15,23,42,0.9);
-      backdrop-filter: blur(12px);
-    }
-
-    .inventory-header {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 10px;
-      font-size: 12px;
-      color: var(--text-soft);
-    }
-
-    .inventory-header strong {
-      color: var(--text-main);
-    }
-
-    .inventory-table-wrapper {
-      margin-top: 6px;
-      border-radius: 14px;
-      border: 1px solid rgba(31,41,55,0.9);
-      overflow: hidden;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 11px;
-    }
-
-    thead {
-      background: rgba(15,23,42,0.98);
-    }
-
-    th, td {
-      padding: 7px 8px;
-      text-align: left;
-      border-bottom: 1px solid rgba(31,41,55,0.9);
-      white-space: nowrap;
-    }
-
-    th {
-      font-weight: 600;
-      color: var(--text-soft);
-    }
-
-    td {
-      color: #e5e7eb;
-    }
-
-    tbody tr:nth-child(odd) {
-      background: rgba(15,23,42,0.9);
-    }
-
-    tbody tr:nth-child(even) {
-      background: rgba(15,23,42,0.82);
-    }
-
-    .badge-policy {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 2px 7px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.7);
-      font-size: 10px;
-      color: var(--text-soft);
-    }
-
-    .badge-policy-eoq { border-color: rgba(56,189,248,0.9); color: #bae6fd; }
-    .badge-policy-rop { border-color: rgba(234,179,8,0.9); color: #fef9c3; }
-    .badge-policy-mm  { border-color: rgba(236,72,153,0.9); color: #fce7f3; }
-
-    .text-right { text-align: right; }
-
-    .kpi-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 2px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.7);
-      font-size: 10px;
-      color: var(--text-soft);
-    }
-
-    .kpi-chip span {
-      color: var(--accent-2);
-      font-weight: 600;
-    }
-
-    /* ESCENARIOS ESTRATÉGICOS (solo CSS, pero realistas) */
-
-    .strategy {
-      margin-top: 20px;
-    }
-
-    .strategy-header {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .strategy-title {
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: var(--text-soft);
-    }
-
-    .strategy-sub {
-      font-size: 11px;
-      color: var(--text-soft);
-      max-width: 420px;
-    }
-
-    .strategy-body {
-      border-radius: 20px;
-      border: 1px solid rgba(30,64,175,0.8);
-      background: rgba(15,23,42,0.96);
-      padding: 12px 14px 14px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.6fr) minmax(0, 2fr);
-      gap: 14px;
-      backdrop-filter: blur(14px);
-    }
-
-    @media (max-width: 820px) {
-      .strategy-body {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-
-    .strategy-options {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      font-size: 11px;
-    }
-
-    .strategy-options legend {
-      font-size: 12px;
-      margin-bottom: 4px;
-      color: var(--text-main);
-      font-weight: 600;
-    }
-
-    .strategy-pill-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .strategy-pill {
-      padding: 5px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.7);
-      background: rgba(15,23,42,0.9);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      transition: transform 0.18s ease-out, box-shadow 0.18s ease-out, border-color 0.18s ease-out, background 0.18s ease-out, color 0.18s ease-out;
-    }
-
-    .strategy-pill span {
-      font-size: 11px;
-    }
-
-    .strategy-pill-emoji {
-      font-size: 13px;
-    }
-
-    .strategy input[type="radio"] {
-      display: none;
-    }
-
-    /* Estados activos con solo CSS */
-    #st-agile:checked ~ .strategy-body .strategy-pill[for="st-agile"],
-    #st-cost:checked ~ .strategy-body .strategy-pill[for="st-cost"],
-    #st-green:checked ~ .strategy-body .strategy-pill[for="st-green"] {
-      border-color: rgba(56,189,248,0.9);
-      background: radial-gradient(circle at top, rgba(56,189,248,0.23), rgba(15,23,42,0.98));
-      box-shadow: 0 14px 32px rgba(15,23,42,0.95);
-      color: #e5e7eb;
-      transform: translateY(-1px);
-    }
-
-    .strategy-panel {
-      display: none;
-      font-size: 12px;
-      color: var(--text-soft);
-    }
-
-    #st-agile:checked ~ .strategy-body #panel-agile,
-    #st-cost:checked  ~ .strategy-body #panel-cost,
-    #st-green:checked ~ .strategy-body #panel-green {
-      display: block;
-    }
-
-    .strategy-kpis {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    @media (max-width: 520px) {
-      .strategy-kpis {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    .strategy-kpi-card {
-      border-radius: 12px;
-      padding: 6px 7px;
-      background: rgba(15,23,42,0.96);
-      border: 1px solid rgba(55,65,81,0.9);
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .strategy-kpi-label {
-      font-size: 10px;
-      color: var(--text-soft);
-    }
-
-    .strategy-kpi-value {
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .strategy-list {
-      margin-top: 6px;
-      list-style: disc;
-      padding-left: 18px;
-      font-size: 11px;
-      line-height: 1.5;
-    }
-
-    /* FOOTER */
-
-    .footer {
-      margin-top: 20px;
-      font-size: 11px;
-      color: var(--text-soft);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      justify-content: space-between;
-    }
-
-    .footer span strong {
-      color: var(--accent);
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SupplyChain Lab · Inventory Intelligence App</title>
+
+<style>
+  :root {
+    --bg: #0a0f1c;
+    --card: #131b2f;
+    --soft: #1c2640;
+    --accent: #38bdf8;
+    --accent2: #34d399;
+    --danger: #fb7185;
+    --warn: #facc15;
+    --text: #e2e8f0;
+    --text-soft: #94a3b8;
+    --radius: 18px;
+    --radius-sm: 10px;
+    --font: system-ui, sans-serif;
+  }
+
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+    font-family: var(--font);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    padding: 0 16px 40px;
+    display: flex; justify-content: center;
+  }
+
+  .app {
+    width: 100%; max-width: 920px;
+    padding: 12px 0 50px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 32px;
+    margin-top: 18px;
+    background: linear-gradient(to right, #38bdf8, #a855f7, #f97316);
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: var(--text-soft);
+    margin-bottom: 14px;
+  }
+
+  .card {
+    background: var(--card);
+    padding: 16px;
+    border-radius: var(--radius);
+    border: 1px solid #1e293b;
+    margin-top: 22px;
+  }
+
+  .card-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .grid-2 {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+
+  @media(max-width: 700px){
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+
+  .kpi {
+    background: var(--soft);
+    padding: 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid #24314d;
+  }
+
+  .tag {
+    padding: 3px 8px;
+    font-size: 10px;
+    border-radius: 999px;
+    width: fit-content;
+  }
+  .green { background: rgba(34,197,94,0.15); color: #bbf7d0; }
+  .yellow { background: rgba(250,204,21,0.15); color: #fef9c3; }
+  .red { background: rgba(248,113,113,0.15); color: #fee2e2; }
+
+  input, select {
+    width: 100%;
+    padding: 8px;
+    background: var(--soft);
+    color: var(--text);
+    border-radius: var(--radius-sm);
+    border: 1px solid #24314d;
+    margin-top: 6px;
+  }
+
+  .btn {
+    margin-top: 14px;
+    padding: 12px;
+    border-radius: var(--radius);
+    background: var(--accent);
+    color: #000;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  #results p {
+    margin-top: 6px;
+    color: var(--text-soft);
+  }
+
+  .cycle {
+    height: 12px;
+    background: var(--soft);
+    border-radius: var(--radius-full);
+    margin-top: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cycle-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--accent2);
+    transition: width 1s linear;
+  }
+</style>
 </head>
 
 <body>
-  <div class="page">
-    <!-- HEADER -->
-    <header class="header">
-      <div class="logo">
-        <div class="logo-badge-wrapper">
-          <div class="logo-badge">
-            <div class="logo-inner">📦</div>
-          </div>
-        </div>
-        <div class="logo-text">
-          <div class="logo-title">Orion Logistics</div>
-          <div class="logo-sub">Supply Chain & Inventory Operations</div>
-        </div>
-      </div>
-      <div class="tag">
-        <span class="tag-dot"></span>
-        <span>Panel interno · Red EMEA 2025</span>
-      </div>
-    </header>
+<div class="app">
 
-    <!-- HERO -->
-    <section class="hero">
-      <div class="hero-main">
-        <h1>
-          Gestión integral de <span class="hero-highlight">inventarios</span> y desempeño de la cadena de suministro.
-        </h1>
-        <p>
-          Este panel resume los indicadores clave que utiliza el equipo de planificación para equilibrar
-          nivel de servicio, costes y riesgo operativo en la red EMEA de Orion Logistics.
-        </p>
+  <h1>SupplyChain Lab</h1>
+  <p class="subtitle">Inventory Intelligence App · HTML + CSS + JavaScript</p>
 
-        <div class="hero-pills">
-          <div class="pill">🎯 <strong>Fill rate</strong> por portafolio</div>
-          <div class="pill">🧊 <strong>Safety stock</strong> por familia</div>
-          <div class="pill">📦 Cobertura en <strong>días de inventario</strong></div>
-          <div class="pill">🚚 Entregas <strong>OTIF</strong> a clientes clave</div>
-        </div>
+  <!-- INVENTORY CALCULATOR -->
+  <div class="card">
+    <div class="card-title">Calculadora Inteligente de Inventarios</div>
+
+    <div class="grid-2">
+      <div>
+        <label>Demanda anual (unidades)</label>
+        <input type="number" id="demand" value="12000">
       </div>
 
-      <aside class="hero-secondary">
-        <div class="hero-secondary-title">
-          <span>Resumen operativo – Últimos 30 días</span>
-          <span><b>Red EMEA</b></span>
-        </div>
-        <div class="ticker">
-          <div class="ticker-card">
-            <div class="ticker-label">Fill rate portafolio</div>
-            <div class="ticker-value">96.3%</div>
-            <div class="ticker-trend trend-up">▲ +1.2 pts vs. mes anterior</div>
-          </div>
-          <div class="ticker-card">
-            <div class="ticker-label">Días de inventario</div>
-            <div class="ticker-value">38 días</div>
-            <div class="ticker-trend trend-down">▼ -4 días vs. objetivo 42</div>
-          </div>
-          <div class="ticker-card">
-            <div class="ticker-label">OTIF clientes clave</div>
-            <div class="ticker-value">92.5%</div>
-            <div class="ticker-trend trend-up">▲ +0.7 pts</div>
-          </div>
-          <div class="ticker-card">
-            <div class="ticker-label">SKUs con backorder</div>
-            <div class="ticker-value">12 SKUs</div>
-            <div class="ticker-trend trend-down">▼ -5 vs. último corte</div>
-          </div>
-        </div>
-      </aside>
-    </section>
-
-    <!-- TABLA DE INVENTARIOS (DATOS ESTÁTICOS PERO REALISTAS) -->
-    <section class="section">
-      <h2 class="section-title">Inventario por SKU crítico · Almacén central Múnich</h2>
-
-      <div class="inventory-card">
-        <div class="inventory-header">
-          <div>
-            Portafolio seleccionado: <strong>Componentes electrónicos A</strong> (10 SKUs de alta rotación)
-          </div>
-          <div>
-            Última actualización: <strong>05.12.2025 · 06:00 CET</strong>
-          </div>
-          <div>
-            <span class="kpi-chip">Cobertura media: <span>41 días</span></span>
-          </div>
-        </div>
-
-        <div class="inventory-table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>SKU</th>
-                <th>Descripción</th>
-                <th>Familia</th>
-                <th>Política</th>
-                <th class="text-right">Fill rate</th>
-                <th class="text-right">Cobertura (días)</th>
-                <th class="text-right">Stock seg. (u)</th>
-                <th class="text-right">Stock total (u)</th>
-                <th class="text-right">Backorders (u)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>OR-IC-001</td>
-                <td>Microchip sensor temp. v2</td>
-                <td>A – Crítico</td>
-                <td>
-                  <span class="badge-policy badge-policy-eoq">EOQ + ROP</span>
-                </td>
-                <td class="text-right">98.7%</td>
-                <td class="text-right">35</td>
-                <td class="text-right">2 450</td>
-                <td class="text-right">4 980</td>
-                <td class="text-right">0</td>
-              </tr>
-              <tr>
-                <td>OR-IC-014</td>
-                <td>Controlador motor 48V</td>
-                <td>A – Crítico</td>
-                <td>
-                  <span class="badge-policy badge-policy-mm">Min–Max</span>
-                </td>
-                <td class="text-right">95.1%</td>
-                <td class="text-right">42</td>
-                <td class="text-right">3 200</td>
-                <td class="text-right">6 150</td>
-                <td class="text-right">120</td>
-              </tr>
-              <tr>
-                <td>OR-PC-032</td>
-                <td>Kit cables alta precisión</td>
-                <td>B – Soporte</td>
-                <td>
-                  <span class="badge-policy badge-policy-rop">ROP fijo</span>
-                </td>
-                <td class="text-right">93.4%</td>
-                <td class="text-right">51</td>
-                <td class="text-right">1 050</td>
-                <td class="text-right">3 420</td>
-                <td class="text-right">65</td>
-              </tr>
-              <tr>
-                <td>OR-MD-021</td>
-                <td>Módulo comunicación IoT</td>
-                <td>A – Crítico</td>
-                <td>
-                  <span class="badge-policy badge-policy-eoq">EOQ + ROP</span>
-                </td>
-                <td class="text-right">97.5%</td>
-                <td class="text-right">33</td>
-                <td class="text-right">1 800</td>
-                <td class="text-right">3 950</td>
-                <td class="text-right">0</td>
-              </tr>
-              <tr>
-                <td>OR-BT-008</td>
-                <td>Batería litio 12V pack</td>
-                <td>A – Crítico</td>
-                <td>
-                  <span class="badge-policy badge-policy-mm">Min–Max</span>
-                </td>
-                <td class="text-right">92.1%</td>
-                <td class="text-right">47</td>
-                <td class="text-right">2 900</td>
-                <td class="text-right">5 600</td>
-                <td class="text-right">210</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <p style="font-size:11px; color:var(--text-soft); margin-top:8px; line-height:1.5;">
-          Los valores mostrados representan una instantánea consolidada del almacén central de Múnich.
-          En una implantación real, esta vista se alimentaría automáticamente desde el WMS/ERP de Orion
-          para monitorizar diariamente la salud del inventario en SKUs críticos.
-        </p>
-      </div>
-    </section>
-
-    <!-- ESTRATEGIAS DE SUPPLY CHAIN (REALISTAS, SIN JS) -->
-    <section class="strategy">
-      <div class="strategy-header">
-        <div>
-          <div class="strategy-title">Estrategias de red y política de inventario</div>
-          <div class="strategy-sub">
-            Orion trabaja con tres configuraciones principales según el tipo de cliente y producto:
-            respuesta ágil, optimización de coste y enfoque en sostenibilidad.
-          </div>
-        </div>
+      <div>
+        <label>Costo por pedido (€)</label>
+        <input type="number" id="orderCost" value="150">
       </div>
 
-      <!-- Radios HTML para "cambiar" la estrategia (solo visual) -->
-      <input type="radio" name="strategy" id="st-agile" checked />
-      <input type="radio" name="strategy" id="st-cost" />
-      <input type="radio" name="strategy" id="st-green" />
-
-      <div class="strategy-body">
-        <fieldset class="strategy-options">
-          <legend>Seleccionar configuración estratégica</legend>
-          <div class="strategy-pill-row">
-            <label class="strategy-pill" for="st-agile">
-              <span class="strategy-pill-emoji">⚡</span><span>Agile / Respuesta rápida</span>
-            </label>
-            <label class="strategy-pill" for="st-cost">
-              <span class="strategy-pill-emoji">💸</span><span>Cost-focused</span>
-            </label>
-            <label class="strategy-pill" for="st-green">
-              <span class="strategy-pill-emoji">🌱</span><span>Green / Sostenible</span>
-            </label>
-          </div>
-          <p>
-            Cada estrategia se aplica a familias de producto distintas (A/B/C) y a clientes con
-            requisitos específicos de servicio, coste y huella ambiental.
-          </p>
-        </fieldset>
-
-        <!-- Panel Agile -->
-        <div class="strategy-panel" id="panel-agile">
-          <p>
-            La configuración <strong>Agile / Respuesta rápida</strong> se utiliza para clientes OEM
-            con demandas muy volátiles y contratos de servicio exigentes.
-          </p>
-          <div class="strategy-kpis">
-            <div class="strategy-kpi-card">
-              <div class="strategy-kpi-label">Fill rate objetivo</div>
-              <div class="strategy-kpi-value">98–99%</div>
-            </div>
-            <div class="strategy-kpi-card">
-              <div class="strategy-kpi-label">Cobertura inventario</div>
-              <div class="strategy-kpi-value">40–50 días</div>
-            </div>
-            <div class="strategy-kpi-card">
-              <div class="strategy-kpi-label">Política tipo</div>
-              <div class="strategy-kpi-value">Min–Max + safety alto</div>
-            </div>
-          </div>
-          <ul class="strategy-list">
-            <li>Uso intensivo de stock de seguridad en SKUs A y ubicaciones cercanas al cliente.</li>
-            <li>Frecuencia de revisión diaria/semanal con planners dedicados.</li>
-            <li>Mayor coste de inventario asumido a cambio de evitar paradas de línea.</li>
-          </ul>
-        </div>
-
-        <!-- Panel Cost -->
-        <div class="strategy-panel" id="panel-cost">
-          <p>
-            La configuración <strong>Cost-focused</strong> se reserva para familias B y C,
-            donde el coste total es más relevante que la disponibilidad absoluta.
-          </p>
-          <div class="strategy-kpis">
-            <div class="strategy-kpi-card">
-              <div class="strategy-kpi-label">Fill rate objetivo</div>
-              <div class="strategy-kpi-value">93–95%</div>
-            </div>
-            <div class="strategy-kpi-card">
-              <div class="strategy-kpi-label">Cobertura inventario</div>
-              <div class="strategy-kpi-value">25–35 días</div>
-            </div>
-            <div class="strategy-kpi-card">
-              <div class="strategy-kpi-label">Política tipo</div>
-              <div class="strategy-kpi-value">EOQ + ROP optimizado</div>
-            </div>
-          </div>
-          <ul class="strategy-list">
-            <li>Consolidación de pedidos para reducir costes de transporte.</li>
-            <li>Ajuste de parámetros EOQ según demanda histórica anual.</li>
-            <li>Aceptación controlada de backorders en productos de baja criticidad.</li>
-          </ul>
-        </div>
-
-        <!-- Panel Green -->
-        <div class="strategy-panel" id="panel-green">
-          <p>
-            La configuración <strong>Green / Sostenible</strong> aplica a clientes estratégicos
-            con compromisos ESG, donde se monitoriza la huella de CO₂ por pedido.
-          </p>
-          <div class="strategy-kpis">
-            <div class="strategy-kpi-card">
-              <div class="strategy-kpi-label">Fill rate objetivo</div>
-              <div class="strategy-kpi-value">96–97%</div>
-            </div>
-            <div class="strategy-kpi-card">
-              <div class="strategy-kpi-label">Cobertura inventario</div>
-              <div class="strategy-kpi-value">35–40 días</div>
-            </div>
-            <div class="strategy-kpi-card">
-              <div class="strategy-kpi-label">Huella CO₂</div>
-              <div class="strategy-kpi-value">-10–15% vs. base</div>
-            </div>
-          </div>
-          <ul class="strategy-list">
-            <li>Mayor uso de modos marítimos y ferroviarios en lugar de aéreo urgente.</li>
-            <li>Planificación de reposiciones con horizontes más estables para evitar picos.</li>
-            <li>Integración futura con indicadores de CO₂ por ruta y por transportista.</li>
-          </ul>
-        </div>
+      <div>
+        <label>Costo anual de mantener inventario (%)</label>
+        <input type="number" id="holding" value="25">
       </div>
-    </section>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-      <span>Panel estático de ejemplo para operaciones de <strong>Supply Chain e inventarios</strong> de Orion Logistics.</span>
-      <span>Estructura lista para conectarse a datos reales desde un WMS/ERP o simulador de inventario.</span>
-    </footer>
+      <div>
+        <label>Costo unitario (€)</label>
+        <input type="number" id="unitCost" value="4.50">
+      </div>
+
+      <div>
+        <label>Lead Time (días)</label>
+        <input type="number" id="leadTime" value="12">
+      </div>
+
+      <div>
+        <label>Desviación demanda diaria (u)</label>
+        <input type="number" id="std" value="5">
+      </div>
+
+      <div>
+        <label>Nivel de servicio (%)</label>
+        <select id="service">
+          <option value="1.28">90%</option>
+          <option value="1.65" selected>95%</option>
+          <option value="2.33">99%</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="btn" onclick="calculate()">Calcular políticas</div>
+
+    <div id="results"></div>
+
+    <div class="cycle">
+      <div class="cycle-fill" id="cycleFill"></div>
+    </div>
   </div>
+
+</div>
+
+<script>
+function calculate() {
+
+  // Inputs
+  const D = Number(document.getElementById("demand").value);
+  const S = Number(document.getElementById("orderCost").value);
+  const H = Number(document.getElementById("holding").value) / 100;
+  const C = Number(document.getElementById("unitCost").value);
+  const LT = Number(document.getElementById("leadTime").value);
+  const SD = Number(document.getElementById("std").value);
+  const Z = Number(document.getElementById("service").value);
+
+  // Calculations
+  const holdingCost = C * H;
+  const EOQ = Math.sqrt((2 * D * S) / holdingCost);
+  
+  const dailyDemand = D / 365;
+  const ROP = (dailyDemand * LT);
+
+  const ss = Z * Math.sqrt(LT * Math.pow(SD, 2));
+  const risk = ss > 400 ? "alto" : ss > 200 ? "medio" : "bajo";
+
+  // OUTPUT HTML
+  document.getElementById("results").innerHTML = `
+      <p><strong>EOQ:</strong> ${EOQ.toFixed(0)} unidades</p>
+      <p><strong>ROP (punto de reorden):</strong> ${ROP.toFixed(0)} unidades</p>
+      <p><strong>Safety Stock:</strong> ${ss.toFixed(0)} unidades</p>
+      <p><strong>Riesgo estimado:</strong> ${risk.toUpperCase()}</p>
+  `;
+
+  // CYCLE ANIMATION
+  let fill = document.getElementById("cycleFill");
+  fill.style.width = "0%";
+  setTimeout(() => fill.style.width = "100%", 100);
+}
+</script>
+
 </body>
 </html>
+
 
