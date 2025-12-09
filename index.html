@@ -10,14 +10,14 @@
        VARIABLES & RESET
     ====================== */
     :root {
-      --bg: #050816;
-      --bg-soft: #0b1220;
-      --bg-card: #020617;
-      --bg-pill: #1e293b;
+      --bg: #020617;
+      --bg-soft: #020617;
+      --bg-card: rgba(15,23,42,0.92);
+      --bg-glass: rgba(15,23,42,0.7);
       --accent: #38bdf8;
-      --accent-soft: rgba(56,189,248,0.2);
       --accent-2: #22c55e;
-      --accent-3: #facc15;
+      --accent-3: #fbbf24;
+      --accent-4: #a855f7;
       --danger: #fb7185;
       --text-main: #e5e7eb;
       --text-soft: #9ca3af;
@@ -39,16 +39,50 @@
     body {
       min-height: 100vh;
       font-family: var(--font-sans);
-      background: radial-gradient(circle at top, #0f172a 0, #020617 45%, #000 100%);
+      background: radial-gradient(circle at top, #020617 0, #000 55%);
       color: var(--text-main);
       display: flex;
       justify-content: center;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* === Fondo grid animado (nuevo) === */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -200px;
+      background-image:
+        linear-gradient(rgba(15,23,42,0.55) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15,23,42,0.55) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: 0.6;
+      z-index: -2;
+      animation: gridMove 22s linear infinite;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 10% 0, rgba(56,189,248,0.18), transparent 60%),
+                  radial-gradient(circle at 90% 100%, rgba(180,83,9,0.3), transparent 65%);
+      mix-blend-mode: screen;
+      opacity: 0.8;
+      z-index: -1;
+    }
+
+    @keyframes gridMove {
+      from { transform: translate3d(0,0,0); }
+      to   { transform: translate3d(40px,40px,0); }
     }
 
     .page {
       width: 100%;
       max-width: 1120px;
-      padding: 20px 16px 36px;
+      padding: 22px 16px 36px;
+      position: relative;
+      z-index: 1;
     }
 
     a {
@@ -57,7 +91,7 @@
     }
 
     /* =====================
-       LAYOUT GENERAL
+       HEADER
     ====================== */
 
     .header {
@@ -71,19 +105,50 @@
     .logo {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+    }
+
+    .logo-badge-wrapper {
+      position: relative;
+    }
+
+    /* Halo animado alrededor del logo (nuevo) */
+    .logo-badge-wrapper::before {
+      content: "";
+      position: absolute;
+      inset: -8px;
+      border-radius: 22px;
+      border: 1px solid rgba(56,189,248,0.3);
+      box-shadow: 0 0 25px rgba(56,189,248,0.7);
+      opacity: 0.5;
+      animation: pulseGlow 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); opacity: 0.35; }
+      50% { transform: scale(1.05); opacity: 0.7; }
     }
 
     .logo-badge {
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       border-radius: 14px;
-      background: radial-gradient(circle at top, #38bdf8, #6366f1);
+      background: conic-gradient(from 180deg, #38bdf8, #a855f7, #f97316, #38bdf8);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 20px;
       box-shadow: 0 0 18px rgba(56,189,248,0.7);
+    }
+
+    .logo-inner {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 30% 0, #e5e7eb, #020617);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .logo-text {
@@ -92,8 +157,8 @@
     }
 
     .logo-title {
-      font-size: 18px;
-      font-weight: 600;
+      font-size: 19px;
+      font-weight: 650;
     }
 
     .logo-sub {
@@ -113,8 +178,8 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(15,23,42,0.6);
-      backdrop-filter: blur(10px);
+      background: rgba(15,23,42,0.7);
+      backdrop-filter: blur(14px);
     }
 
     .tag-dot {
@@ -126,22 +191,35 @@
     }
 
     /* =====================
-       HERO / INTRO
+       HERO
     ====================== */
 
     .hero {
       border-radius: 24px;
       padding: 20px 18px 18px;
-      border: 1px solid #1f2937;
+      border: 1px solid rgba(31,41,55,0.9);
       background:
-        radial-gradient(circle at 0 0, rgba(56,189,248,0.18), transparent 55%),
-        radial-gradient(circle at 100% 0, rgba(34,197,94,0.18), transparent 55%),
-        linear-gradient(to bottom right, #020617, #020617);
+        linear-gradient(to bottom right, rgba(15,23,42,0.95), rgba(15,23,42,0.96)),
+        radial-gradient(circle at 0 0, rgba(56,189,248,0.22), transparent 55%);
       box-shadow: var(--shadow-soft);
       display: grid;
-      grid-template-columns: minmax(0, 3fr) minmax(0, 2.3fr);
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.4fr);
       gap: 18px;
-      margin-bottom: 20px;
+      margin-bottom: 22px;
+      backdrop-filter: blur(15px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: 1px solid rgba(148,163,184,0.35);
+      pointer-events: none;
+      mix-blend-mode: screen;
+      opacity: 0.4;
     }
 
     @media (max-width: 840px) {
@@ -186,6 +264,7 @@
       align-items: center;
       gap: 6px;
       color: var(--text-soft);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
     }
 
     .pill strong {
@@ -193,11 +272,18 @@
       font-weight: 500;
     }
 
+    .pill:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 26px rgba(15,23,42,0.8);
+      border-color: rgba(56,189,248,0.8);
+    }
+
     .hero-secondary {
       border-radius: 18px;
       background: radial-gradient(circle at 0 0, rgba(56,189,248,0.16), transparent 60%);
       border: 1px solid rgba(148,163,184,0.4);
       padding: 10px 10px 12px;
+      backdrop-filter: blur(18px);
     }
 
     .hero-secondary-title {
@@ -233,13 +319,19 @@
     }
 
     .ticker-card {
-      background: rgba(15,23,42,0.85);
+      background: rgba(15,23,42,0.9);
       border-radius: 12px;
       border: 1px solid rgba(30,64,175,0.8);
       padding: 6px 8px;
       display: flex;
       flex-direction: column;
       gap: 2px;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .ticker-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(15,23,42,0.9);
     }
 
     .ticker-label {
@@ -286,11 +378,13 @@
     .map-card {
       border-radius: var(--radius-xl);
       border: 1px solid var(--border-soft);
-      background: radial-gradient(circle at 50% -30%, rgba(56,189,248,0.25), transparent 50%), #020617;
+      background: linear-gradient(to bottom right, rgba(15,23,42,0.96), rgba(15,23,42,0.98));
       padding: 14px 16px 16px;
       display: grid;
       grid-template-columns: minmax(0, 1.5fr) minmax(0, 2fr);
       gap: 16px;
+      box-shadow: 0 18px 40px rgba(15,23,42,0.9);
+      backdrop-filter: blur(12px);
     }
 
     @media (max-width: 840px) {
@@ -360,9 +454,10 @@
       padding: 10px 10px 9px;
       border-radius: 16px;
       background: rgba(15,23,42,0.9);
-      border: 1px solid rgba(148,163,184,0.6);
+      border: 1px solid rgba(148,163,184,0.7);
       position: relative;
       overflow: hidden;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
     }
 
     .node::after {
@@ -372,6 +467,12 @@
       background: radial-gradient(circle at top, rgba(56,189,248,0.18), transparent 55%);
       opacity: 0;
       transition: opacity var(--transition-med);
+    }
+
+    .node:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 30px rgba(15,23,42,0.9);
+      border-color: rgba(56,189,248,0.8);
     }
 
     .node:hover::after {
@@ -407,7 +508,7 @@
     }
 
     /* =====================
-       TABS ANALÍTICOS (CSS ONLY)
+       TABS ANALÍTICOS
     ====================== */
 
     .tabs {
@@ -418,10 +519,11 @@
       display: inline-flex;
       padding: 3px;
       border-radius: 999px;
-      background: rgba(15,23,42,0.9);
+      background: rgba(15,23,42,0.95);
       border: 1px solid rgba(148,163,184,0.7);
       position: relative;
       margin-bottom: 12px;
+      backdrop-filter: blur(14px);
     }
 
     .tabs-header label {
@@ -475,11 +577,12 @@
     .tabs-content {
       border-radius: var(--radius-xl);
       border: 1px solid var(--border-soft);
-      background: #020617;
+      background: rgba(15,23,42,0.96);
       padding: 14px 16px 16px;
       display: grid;
       grid-template-columns: minmax(0, 1.8fr) minmax(0, 2fr);
       gap: 16px;
+      backdrop-filter: blur(16px);
     }
 
     @media (max-width: 860px) {
@@ -516,7 +619,7 @@
 
     .kpi-card {
       border-radius: 14px;
-      background: radial-gradient(circle at top, rgba(56,189,248,0.15), transparent 60%);
+      background: radial-gradient(circle at top, rgba(56,189,248,0.18), transparent 60%);
       border: 1px solid rgba(55,65,81,0.9);
       padding: 8px 9px;
       display: flex;
@@ -664,11 +767,165 @@
     }
 
     /* =====================
-       FOOTER MINI
+       SCENARIO PLAYGROUND (NUEVO)
+    ====================== */
+
+    .scenario {
+      margin-top: 22px;
+    }
+
+    .scenario-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .scenario-title {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-soft);
+    }
+
+    .scenario-sub {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .scenario-body {
+      border-radius: 20px;
+      border: 1px solid rgba(30,64,175,0.8);
+      background: rgba(15,23,42,0.96);
+      padding: 12px 14px 14px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 2fr);
+      gap: 14px;
+      backdrop-filter: blur(14px);
+    }
+
+    @media (max-width: 820px) {
+      .scenario-body {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .scenario-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 11px;
+    }
+
+    .scenario-options legend {
+      font-size: 12px;
+      margin-bottom: 4px;
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .scenario-pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .scenario-pill {
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
+    }
+
+    .scenario-pill span {
+      font-size: 11px;
+    }
+
+    .scenario-pill-emoji {
+      font-size: 13px;
+    }
+
+    .scenario input[type="radio"] {
+      display: none;
+    }
+
+    /* Estados activos con solo CSS */
+    #sc-agile:checked ~ .scenario-body .scenario-pill[for="sc-agile"],
+    #sc-cost:checked ~ .scenario-body .scenario-pill[for="sc-cost"],
+    #sc-green:checked ~ .scenario-body .scenario-pill[for="sc-green"] {
+      border-color: rgba(56,189,248,0.9);
+      background: radial-gradient(circle at top, rgba(56,189,248,0.23), rgba(15,23,42,0.98));
+      box-shadow: 0 14px 32px rgba(15,23,42,0.95);
+      color: #e5e7eb;
+      transform: translateY(-1px);
+    }
+
+    .scenario-panel {
+      display: none;
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    #sc-agile:checked ~ .scenario-body #panel-agile,
+    #sc-cost:checked ~ .scenario-body #panel-cost,
+    #sc-green:checked ~ .scenario-body #panel-green {
+      display: block;
+    }
+
+    .scenario-kpis {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 520px) {
+      .scenario-kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .scenario-kpi-card {
+      border-radius: 12px;
+      padding: 6px 7px;
+      background: rgba(15,23,42,0.96);
+      border: 1px solid rgba(55,65,81,0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .scenario-kpi-label {
+      font-size: 10px;
+      color: var(--text-soft);
+    }
+
+    .scenario-kpi-value {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .scenario-list {
+      margin-top: 6px;
+      list-style: disc;
+      padding-left: 18px;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    /* =====================
+       FOOTER
     ====================== */
 
     .footer {
-      margin-top: 18px;
+      margin-top: 20px;
       font-size: 11px;
       color: var(--text-soft);
       display: flex;
@@ -688,7 +945,11 @@
     <!-- HEADER -->
     <header class="header">
       <div class="logo">
-        <div class="logo-badge">📦</div>
+        <div class="logo-badge-wrapper">
+          <div class="logo-badge">
+            <div class="logo-inner">📦</div>
+          </div>
+        </div>
         <div class="logo-text">
           <div class="logo-title">GreenFlow Supply Chain</div>
           <div class="logo-sub">Inventory · Transport · Risk</div>
@@ -991,6 +1252,122 @@
             <li>Las rutas con bajo OTIF obligan a subir el stock de seguridad o aceptar más riesgo de ruptura.</li>
             <li>Con datos reales, este panel podría mostrarse por transportista, corredor o modo (marítimo, aéreo, terrestre).</li>
             <li>Integrado con un simulador de inventario, permitiría entender el impacto financiero de mejorar el OTIF.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENARIO PLAYGROUND (NUEVO) -->
+    <section class="scenario">
+      <div class="scenario-header">
+        <div>
+          <div class="scenario-title">Scenario playground</div>
+          <div class="scenario-sub">
+            Cambia entre tres estrategias de supply chain y observa cómo varían fill rate, inventario y coste.
+          </div>
+        </div>
+      </div>
+
+      <!-- Radios ocultos para el selector -->
+      <input type="radio" name="scenario" id="sc-agile" checked />
+      <input type="radio" name="scenario" id="sc-cost" />
+      <input type="radio" name="scenario" id="sc-green" />
+
+      <div class="scenario-body">
+        <fieldset class="scenario-options">
+          <legend>Estrategia seleccionada</legend>
+          <div class="scenario-pill-row">
+            <label class="scenario-pill" for="sc-agile">
+              <span class="scenario-pill-emoji">⚡</span><span>Agile / Responsive</span>
+            </label>
+            <label class="scenario-pill" for="sc-cost">
+              <span class="scenario-pill-emoji">💸</span><span>Cost-focused</span>
+            </label>
+            <label class="scenario-pill" for="sc-green">
+              <span class="scenario-pill-emoji">🌱</span><span>Green / Sustainable</span>
+            </label>
+          </div>
+          <p>
+            Conceptualmente, estos escenarios representan distintas configuraciones de:
+            niveles de servicio, safety stock, consolidación de transporte y huella de carbono.
+          </p>
+        </fieldset>
+
+        <div class="scenario-panel" id="panel-agile">
+          <p>
+            La estrategia <strong>Agile / Responsive</strong> prioriza tiempo de respuesta y disponibilidad,
+            aceptando un coste algo mayor para proteger el servicio.
+          </p>
+          <div class="scenario-kpis">
+            <div class="scenario-kpi-card">
+              <div class="scenario-kpi-label">Fill rate objetivo</div>
+              <div class="scenario-kpi-value">98%</div>
+            </div>
+            <div class="scenario-kpi-card">
+              <div class="scenario-kpi-label">Días de inventario</div>
+              <div class="scenario-kpi-value">45</div>
+            </div>
+            <div class="scenario-kpi-card">
+              <div class="scenario-kpi-label">Costo por unidad</div>
+              <div class="scenario-kpi-value">€1.75</div>
+            </div>
+          </div>
+          <ul class="scenario-list">
+            <li>Safety stock alto en SKUs críticos para absorber variaciones de demanda.</li>
+            <li>Más envíos parciales para reaccionar rápido a picos regionales.</li>
+            <li>Apto para segmentos donde la pérdida de venta es muy costosa.</li>
+          </ul>
+        </div>
+
+        <div class="scenario-panel" id="panel-cost">
+          <p>
+            La estrategia <strong>Cost-focused</strong> busca minimizar el coste total de la cadena,
+            incluso si eso implica aceptar un nivel de servicio ligeramente menor.
+          </p>
+          <div class="scenario-kpis">
+            <div class="scenario-kpi-card">
+              <div class="scenario-kpi-label">Fill rate objetivo</div>
+              <div class="scenario-kpi-value">94%</div>
+            </div>
+            <div class="scenario-kpi-card">
+              <div class="scenario-kpi-label">Días de inventario</div>
+              <div class="scenario-kpi-value">30</div>
+            </div>
+            <div class="scenario-kpi-card">
+              <div class="scenario-kpi-label">Costo por unidad</div>
+              <div class="scenario-kpi-value">€1.18</div>
+            </div>
+          </div>
+          <ul class="scenario-list">
+            <li>Safety stock optimizado mediante políticas tipo EOQ + ROP.</li>
+            <li>Mayor consolidación de transporte y menos envíos urgentes.</li>
+            <li>Interesante para categorías con sensibilidad fuerte al coste.</li>
+          </ul>
+        </div>
+
+        <div class="scenario-panel" id="panel-green">
+          <p>
+            La estrategia <strong>Green / Sustainable</strong> intenta equilibrar servicio, coste y huella ambiental,
+            priorizando rutas y políticas con menos emisiones.
+          </p>
+          <div class="scenario-kpis">
+            <div class="scenario-kpi-card">
+              <div class="scenario-kpi-label">Fill rate objetivo</div>
+              <div class="scenario-kpi-value">96%</div>
+            </div>
+            <div class="scenario-kpi-card">
+              <div class="scenario-kpi-label">Días de inventario</div>
+              <div class="scenario-kpi-value">36</div>
+            </div>
+            <div class="scenario-kpi-card">
+              <div class="scenario-kpi-label">Huella CO₂</div>
+              <div class="scenario-kpi-value">-12%</div>
+            </div>
+          </div>
+          <ul class="scenario-list">
+            <li>Uso de modos de transporte con menos emisiones cuando el lead time lo permite.</li>
+            <li>Planificación más estable para reducir urgencias y vuelos de última hora.</li>
+            <li>Punto medio entre coste y servicio, alineado con objetivos ESG.</li>
           </ul>
         </div>
       </div>
