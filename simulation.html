@@ -1,389 +1,331 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>SupplyChain Intelligence · Inventory Simulation</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SupplyChain Intelligence · Inventory Simulation</title>
 
-  <style>
-    :root {
-      --bg: #020617;
-      --card: #0f172a;
-      --soft: #111827;
-      --accent: #38bdf8;
-      --accent2: #22c55e;
-      --danger: #fb7185;
-      --text: #e5e7eb;
-      --text-soft: #9ca3af;
-      --radius: 18px;
-      --radius-sm: 10px;
-      --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
+<style>
+  :root {
+    --bg: #0a0f1c;
+    --card: #131b2f;
+    --soft: #1c2640;
+    --accent: #38bdf8;
+    --accent2: #34d399;
+    --warn: #facc15;
+    --danger: #fb7185;
+    --text: #e2e8f0;
+    --text-soft: #94a3b8;
+    --radius: 18px;
+    --radius-sm: 10px;
+    --font: system-ui, sans-serif;
+  }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { margin:0; padding:0; box-sizing:border-box; font-family:var(--font); }
 
-    body {
-      min-height: 100vh;
-      background: radial-gradient(circle at top, #020617 0, #000 60%);
-      color: var(--text);
-      font-family: var(--font);
-      display: flex;
-      justify-content: center;
-    }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    padding-bottom: 50px;
+  }
 
-    .app {
-      width: 100%;
-      max-width: 1100px;
-      padding: 18px 16px 40px;
-    }
+  nav {
+    width: 100%;
+    background: var(--card);
+    padding: 14px;
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    position: sticky;
+    top: 0;
+    z-index: 99;
+    border-bottom: 1px solid #1e293b;
+  }
+  nav a {
+    color: var(--text-soft);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  nav a:hover { color: var(--accent); }
 
-    .nav {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 18px;
-    }
+  .container {
+    max-width: 960px;
+    margin: auto;
+    padding: 20px;
+  }
 
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+  h1 {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 6px;
+    background: linear-gradient(to right, #38bdf8, #a855f7, #f97316);
+    -webkit-background-clip: text;
+    color: transparent;
+  }
 
-    .nav-logo-badge {
-      width: 40px;
-      height: 40px;
-      border-radius: 14px;
-      background: conic-gradient(from 180deg, #38bdf8, #a855f7, #f97316, #38bdf8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 18px rgba(56,189,248,0.7);
-    }
+  .subtitle {
+    text-align:center;
+    font-size:14px;
+    color:var(--text-soft);
+    margin-bottom:20px;
+  }
 
-    .nav-logo-inner {
-      width: 32px;
-      height: 32px;
-      border-radius: 12px;
-      background: radial-gradient(circle at 30% 0, #e5e7eb, #020617);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-    }
+  .card {
+    background: var(--card);
+    padding: 16px;
+    border-radius: var(--radius);
+    border: 1px solid #1e293b;
+    margin-top: 26px;
+  }
 
-    .nav-title {
-      font-size: 18px;
-      font-weight: 650;
-    }
+  .row { display:flex; justify-content:space-between; margin-top:8px; }
+  .label { color:var(--text-soft); font-size:14px; }
+  .value { font-weight:600; }
 
-    .nav-sub {
-      font-size: 11px;
-      color: var(--text-soft);
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-    }
+  input {
+    width:100%;
+    padding:10px;
+    margin-top:6px;
+    background: var(--soft);
+    border:1px solid #24314d;
+    border-radius: var(--radius-sm);
+    color: var(--text);
+  }
 
-    .nav-links {
-      margin-left: auto;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      font-size: 12px;
-    }
+  .btn {
+    background: var(--accent);
+    color:#000;
+    padding:12px;
+    border-radius: var(--radius);
+    text-align:center;
+    font-weight:600;
+    margin-top:16px;
+    cursor:pointer;
+  }
 
-    .nav-links a {
-      color: var(--text-soft);
-      text-decoration: none;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(15,23,42,0.85);
-      border: 1px solid #1f2937;
-    }
+  canvas {
+    width:100%;
+    height:300px;
+    margin-top:20px;
+    background:#111827;
+    border-radius: var(--radius-sm);
+    border:1px solid #24314d;
+  }
 
-    .nav-links a.active {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
+  .tag {
+    padding:3px 8px;
+    border-radius:999px;
+    width:fit-content;
+    font-size:12px;
+    margin-top:4px;
+  }
+  .green {background:rgba(34,197,94,0.15); color:#bbf7d0;}
+  .yellow {background:rgba(250,204,21,0.15); color:#fef9c3;}
+  .red {background:rgba(248,113,113,0.15); color:#fee2e2;}
 
-    h1 {
-      font-size: 26px;
-      margin-top: 4px;
-      background: linear-gradient(to right, #38bdf8, #a855f7);
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-
-    .subtitle {
-      margin-top: 6px;
-      font-size: 14px;
-      color: var(--text-soft);
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1.1fr 1.6fr;
-      gap: 14px;
-      margin-top: 20px;
-    }
-
-    @media (max-width: 900px) {
-      .grid-2 {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .card {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 14px 16px 16px;
-      border: 1px solid #1f2937;
-    }
-
-    .card-title {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-
-    label {
-      font-size: 13px;
-      color: var(--text-soft);
-    }
-
-    input {
-      width: 100%;
-      padding: 8px;
-      border-radius: var(--radius-sm);
-      border: 1px solid #1f2937;
-      background: var(--soft);
-      color: var(--text);
-      margin-bottom: 10px;
-      margin-top: 4px;
-    }
-
-    .btn {
-      width: 100%;
-      margin-top: 4px;
-      padding: 10px;
-      border-radius: var(--radius);
-      background: var(--accent);
-      border: none;
-      color: #0b1120;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .metrics {
-      margin-top: 10px;
-      font-size: 12px;
-      color: var(--text-soft);
-      line-height: 1.6;
-    }
-
-    canvas {
-      width: 100%;
-      max-width: 700px;
-      height: 260px;
-      border-radius: var(--radius-sm);
-      background: #020617;
-      border: 1px solid #1f2937;
-    }
-  </style>
+</style>
 </head>
 
 <body>
-  <div class="app">
-    <!-- NAVBAR -->
-    <header class="nav">
-      <div class="nav-logo">
-        <div class="nav-logo-badge">
-          <div class="nav-logo-inner">SC</div>
-        </div>
-        <div>
-          <div class="nav-title">SupplyChain Intelligence App</div>
-          <div class="nav-sub">Inventory · Risk · Network</div>
-        </div>
-      </div>
-      <nav class="nav-links">
-        <a href="index.html">Dashboard</a>
-        <a href="inventory.html">Inventory</a>
-        <a href="map.html">Logistics Map</a>
-        <a href="simulation.html" class="active">Simulation</a>
-        <a href="risk.html">Risk</a>
-        <a href="abc.html">ABC</a>
-      </nav>
-    </header>
 
-    <h1>Day-by-Day Inventory Simulation</h1>
-    <p class="subtitle">
-      Simple stochastic simulation of one SKU under a continuous review policy (ROP + fixed order quantity).
-    </p>
+<!-- NAV -->
+<nav>
+  <a href="index.html">Dashboard</a>
+  <a href="inventory.html">Inventory</a>
+  <a href="map.html">Network Map</a>
+  <a href="simulation.html">Simulation</a>
+  <a href="risk.html">Risk</a>
+  <a href="abc.html">ABC</a>
+</nav>
 
-    <div class="grid-2">
-      <!-- LEFT: FORM -->
-      <section class="card">
-        <div class="card-title">Simulation Parameters</div>
-        <div>
-          <label>Planning horizon (days)</label>
-          <input type="number" id="days" value="60" min="10" max="365" />
-        </div>
-        <div>
-          <label>Initial inventory (units)</label>
-          <input type="number" id="initInv" value="500" />
-        </div>
-        <div>
-          <label>Average daily demand (units)</label>
-          <input type="number" id="avgDemand" value="20" />
-        </div>
-        <div>
-          <label>Demand standard deviation (units)</label>
-          <input type="number" id="stdDemand" value="5" />
-        </div>
-        <div>
-          <label>Lead time (days)</label>
-          <input type="number" id="leadTime" value="7" />
-        </div>
-        <div>
-          <label>Reorder point (ROP)</label>
-          <input type="number" id="rop" value="200" />
-        </div>
-        <div>
-          <label>Order quantity (Q)</label>
-          <input type="number" id="orderQty" value="400" />
-        </div>
+<div class="container">
 
-        <button class="btn" id="runBtn">Run simulation</button>
+  <h1>Inventory Simulation</h1>
+  <p class="subtitle">Day-by-day performance under demand variability</p>
 
-        <div class="metrics" id="metrics"></div>
-      </section>
+  <!-- INPUT PANEL -->
+  <div class="card">
+    <h3>Simulation Parameters</h3>
 
-      <!-- RIGHT: CHART -->
-      <section class="card">
-        <div class="card-title">Inventory profile (units) · Simulated</div>
-        <canvas id="chartCanvas" width="700" height="260"></canvas>
-      </section>
+    <div class="row">
+      <span class="label">Initial Inventory</span>
+      <input id="inv0" type="number" value="500">
+    </div>
+
+    <div class="row">
+      <span class="label">Daily Mean Demand</span>
+      <input id="mean" type="number" value="40">
+    </div>
+
+    <div class="row">
+      <span class="label">Daily Std Dev</span>
+      <input id="std" type="number" value="10">
+    </div>
+
+    <div class="row">
+      <span class="label">Lead Time (days)</span>
+      <input id="lt" type="number" value="7">
+    </div>
+
+    <div class="row">
+      <span class="label">Reorder Point</span>
+      <input id="rop" type="number" value="180">
+    </div>
+
+    <div class="row">
+      <span class="label">Order Quantity</span>
+      <input id="q" type="number" value="300">
+    </div>
+
+    <div class="btn" onclick="runSimulation()">Run Simulation</div>
+  </div>
+
+  <!-- KPI CARD -->
+  <div class="card" id="kpiCard" style="display:none;">
+    <h3>Results Summary</h3>
+
+    <div class="row">
+      <span class="label">Days Simulated</span>
+      <span class="value" id="kpiDays"></span>
+    </div>
+
+    <div class="row">
+      <span class="label">Stockout Days</span>
+      <span class="value" id="kpiStockout"></span>
+    </div>
+
+    <div class="row">
+      <span class="label">Total Orders Placed</span>
+      <span class="value" id="kpiOrders"></span>
     </div>
   </div>
 
-  <script>
-    const canvas = document.getElementById("chartCanvas");
-    const ctx = canvas.getContext("2d");
+  <!-- CHART -->
+  <canvas id="simChart"></canvas>
 
-    function randNormal(mean, std) {
-      // Box–Muller transform
-      let u = 0, v = 0;
-      while (u === 0) u = Math.random();
-      while (v === 0) v = Math.random();
-      const z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
-      return mean + std * z;
-    }
+</div>
 
-    function simulate() {
-      const days = Number(document.getElementById("days").value);
-      const initInv = Number(document.getElementById("initInv").value);
-      const avgDemand = Number(document.getElementById("avgDemand").value);
-      const stdDemand = Number(document.getElementById("stdDemand").value);
-      const leadTime = Number(document.getElementById("leadTime").value);
-      const rop = Number(document.getElementById("rop").value);
-      const orderQty = Number(document.getElementById("orderQty").value);
+<script src="data.js"></script>
 
-      let inv = initInv;
-      let backorders = 0;
-      let totalDemand = 0;
-      let servedDemand = 0;
-      let orders = []; // {arrivalDay, qty}
-      const invHistory = [];
+<script>
+/* ============================================================
+   NORMAL RANDOM DEMAND GENERATOR (approx)
+   ============================================================ */
+function randomNormal(mean, std) {
+  let u = Math.random();
+  let v = Math.random();
+  let z = Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  return Math.max(0, Math.round(mean + std * z));
+}
 
-      for (let day = 0; day < days; day++) {
-        // Receive orders
-        orders = orders.filter(o => {
-          if (o.arrivalDay === day) {
-            inv += o.qty;
-            return false;
-          }
-          return true;
-        });
+/* ============================================================
+   MAIN SIMULATION
+   ============================================================ */
+function runSimulation() {
+  const inv0 = Number(document.getElementById("inv0").value);
+  const mean = Number(document.getElementById("mean").value);
+  const std = Number(document.getElementById("std").value);
+  const LT = Number(document.getElementById("lt").value);
+  const ROP = Number(document.getElementById("rop").value);
+  const Q = Number(document.getElementById("q").value);
 
-        // Demand
-        let demand = Math.max(0, Math.round(randNormal(avgDemand, stdDemand)));
-        totalDemand += demand;
+  const days = 60;
+  let inventory = inv0;
+  let incomingOrders = [];
 
-        // Fulfill
-        let served = Math.min(inv, demand);
-        inv -= served;
-        servedDemand += served;
-        backorders += demand - served;
+  let invHistory = [];
+  let demandHistory = [];
 
-        // Check ROP
-        if (inv <= rop) {
-          orders.push({
-            arrivalDay: day + leadTime,
-            qty: orderQty
-          });
-        }
+  let stockouts = 0;
+  let ordersPlaced = 0;
 
-        invHistory.push(inv);
+  for (let day = 0; day < days; day++) {
+
+    // Arrivals
+    for (let i = incomingOrders.length - 1; i >= 0; i--) {
+      incomingOrders[i].lt--;
+      if (incomingOrders[i].lt <= 0) {
+        inventory += incomingOrders[i].qty;
+        incomingOrders.splice(i, 1);
       }
-
-      const fillRate = totalDemand > 0 ? (servedDemand / totalDemand) * 100 : 0;
-
-      document.getElementById("metrics").innerHTML = `
-        <p><strong>Total demand:</strong> ${totalDemand.toFixed(0)} units</p>
-        <p><strong>Served demand:</strong> ${servedDemand.toFixed(0)} units</p>
-        <p><strong>Backorders:</strong> ${backorders.toFixed(0)} units</p>
-        <p><strong>Service level (fill rate):</strong> ${fillRate.toFixed(1)}%</p>
-        <p><strong>Orders placed:</strong> ${orders.length} (some might arrive after horizon)</p>
-      `;
-
-      drawChart(invHistory);
     }
 
-    function drawChart(data) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Demand
+    let demandToday = randomNormal(mean, std);
+    demandHistory.push(demandToday);
 
-      if (!data.length) return;
-
-      const margin = 30;
-      const width = canvas.width - margin * 2;
-      const height = canvas.height - margin * 2;
-
-      const maxVal = Math.max(...data, 1);
-      const minVal = Math.min(...data, 0);
-      const range = maxVal - minVal || 1;
-
-      // Axes
-      ctx.strokeStyle = "#1f2937";
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(margin, margin);
-      ctx.lineTo(margin, margin + height);
-      ctx.lineTo(margin + width, margin + height);
-      ctx.stroke();
-
-      // Line
-      ctx.strokeStyle = "#38bdf8";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      data.forEach((val, i) => {
-        const x = margin + (i / (data.length - 1 || 1)) * width;
-        const y = margin + height - ((val - minVal) / range) * height;
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-      ctx.stroke();
-
-      // Baseline text
-      ctx.fillStyle = "#9ca3af";
-      ctx.font = "10px system-ui";
-      ctx.fillText("0", margin - 16, margin + height + 3);
-      ctx.fillText(String(maxVal.toFixed(0)), margin - 24, margin + 8);
+    if (inventory >= demandToday) {
+      inventory -= demandToday;
+    } else {
+      stockouts++;
+      inventory = 0;
     }
 
-    document.getElementById("runBtn").addEventListener("click", simulate);
+    // Reorder
+    if (inventory <= ROP) {
+      incomingOrders.push({ qty: Q, lt: LT });
+      ordersPlaced++;
+    }
 
-    // Initial run
-    simulate();
-  </script>
+    invHistory.push(inventory);
+  }
+
+  /* Update KPI card */
+  document.getElementById("kpiDays").textContent = days;
+  document.getElementById("kpiStockout").textContent = stockouts;
+  document.getElementById("kpiOrders").textContent = ordersPlaced;
+  document.getElementById("kpiCard").style.display = "block";
+
+  drawChart(invHistory, demandHistory);
+}
+
+/* ============================================================
+   DRAW CANVAS CHART
+   ============================================================ */
+function drawChart(inv, demand) {
+  const canvas = document.getElementById("simChart");
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = canvas.clientWidth * 2;
+  canvas.height = 300 * 2;
+
+  ctx.scale(2,2);
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Draw axes
+  ctx.strokeStyle = "#334155";
+  ctx.lineWidth = 2;
+
+  ctx.beginPath();
+  ctx.moveTo(40, 10);
+  ctx.lineTo(40, 260);
+  ctx.lineTo(620, 260);
+  ctx.stroke();
+
+  // Plot inventory line
+  ctx.strokeStyle = "#38bdf8";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(40, 260 - inv[0]);
+
+  for (let i = 1; i < inv.length; i++) {
+    ctx.lineTo(40 + i * 10, 260 - inv[i]);
+  }
+  ctx.stroke();
+
+  // Plot demand line
+  ctx.strokeStyle = "#34d399";
+  ctx.beginPath();
+  ctx.moveTo(40, 260 - demand[0]);
+
+  for (let i = 1; i < demand.length; i++) {
+    ctx.lineTo(40 + i * 10, 260 - demand[i]);
+  }
+  ctx.stroke();
+
+}
+</script>
+
 </body>
 </html>
