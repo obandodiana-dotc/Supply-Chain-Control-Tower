@@ -1,346 +1,310 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>SupplyChain Intelligence · Risk Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SupplyChain Intelligence · Risk Dashboard</title>
 
-  <style>
-    :root {
-      --bg: #020617;
-      --card: #0f172a;
-      --soft: #111827;
-      --accent: #38bdf8;
-      --accent2: #22c55e;
-      --accent3: #facc15;
-      --danger: #fb7185;
-      --text: #e5e7eb;
-      --text-soft: #9ca3af;
-      --radius: 18px;
-      --radius-sm: 10px;
-      --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
+<style>
+  :root {
+    --bg: #0a0f1c;
+    --card: #131b2f;
+    --soft: #1c2640;
+    --accent: #38bdf8;
+    --accent2: #34d399;
+    --warn: #facc15;
+    --danger: #fb7185;
+    --text: #e2e8f0;
+    --text-soft: #94a3b8;
+    --radius: 18px;
+    --radius-sm: 10px;
+    --font: system-ui, sans-serif;
+  }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { margin:0; padding:0; box-sizing:border-box; font-family:var(--font); }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    padding-bottom: 50px;
+  }
 
-    body {
-      min-height: 100vh;
-      background: radial-gradient(circle at top, #020617 0, #000 60%);
-      color: var(--text);
-      font-family: var(--font);
-      display: flex;
-      justify-content: center;
-    }
+  nav {
+    width: 100%;
+    background: var(--card);
+    padding: 14px;
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    position: sticky;
+    top: 0;
+    z-index: 99;
+    border-bottom: 1px solid #1e293b;
+  }
+  nav a {
+    color: var(--text-soft);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  nav a:hover { color: var(--accent); }
 
-    .app {
-      width: 100%;
-      max-width: 1100px;
-      padding: 18px 16px 40px;
-    }
+  .container {
+    max-width: 960px;
+    margin: auto;
+    padding: 20px;
+  }
 
-    .nav {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 18px;
-    }
+  h1 {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 6px;
+    background: linear-gradient(to right, #38bdf8, #a855f7, #f97316);
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+  .subtitle {
+    text-align:center;
+    font-size:14px;
+    color:var(--text-soft);
+    margin-bottom:20px;
+  }
 
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+  .card {
+    background: var(--card);
+    padding: 16px;
+    border-radius: var(--radius);
+    border: 1px solid #1e293b;
+    margin-top: 26px;
+  }
 
-    .nav-logo-badge {
-      width: 40px;
-      height: 40px;
-      border-radius: 14px;
-      background: conic-gradient(from 180deg, #38bdf8, #a855f7, #f97316, #38bdf8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 18px rgba(56,189,248,0.7);
-    }
+  .card-title {
+    font-size:18px;
+    margin-bottom:12px;
+    font-weight:600;
+  }
 
-    .nav-logo-inner {
-      width: 32px;
-      height: 32px;
-      border-radius: 12px;
-      background: radial-gradient(circle at 30% 0, #e5e7eb, #020617);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-    }
+  .kpi {
+    background: var(--soft);
+    padding:16px;
+    border-radius:var(--radius-sm);
+    border:1px solid #24314d;
+    margin-top:14px;
+  }
 
-    .nav-title {
-      font-size: 18px;
-      font-weight: 650;
-    }
+  .kpi-value {
+    font-size:32px;
+    font-weight:700;
+  }
 
-    .nav-sub {
-      font-size: 11px;
-      color: var(--text-soft);
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-    }
+  .tag {
+    padding:4px 10px;
+    border-radius:999px;
+    width:fit-content;
+    font-size:12px;
+    margin-top:8px;
+  }
+  .green { background:rgba(34,197,94,0.15); color:#bbf7d0; }
+  .yellow { background:rgba(250,204,21,0.15); color:#fef9c3; }
+  .red { background:rgba(248,113,113,0.15); color:#fee2e2; }
 
-    .nav-links {
-      margin-left: auto;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      font-size: 12px;
-    }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
 
-    .nav-links a {
-      color: var(--text-soft);
-      text-decoration: none;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(15,23,42,0.85);
-      border: 1px solid #1f2937;
-    }
+  @media(max-width:700px){
+    .grid-2 { grid-template-columns:1fr; }
+  }
 
-    .nav-links a.active {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
+  .node-box {
+    background: var(--soft);
+    padding:14px;
+    border-radius:var(--radius-sm);
+    border:1px solid #24314d;
+  }
+  .node-name {
+    font-size:16px;
+    font-weight:600;
+  }
 
-    h1 {
-      font-size: 26px;
-      margin-top: 4px;
-      background: linear-gradient(to right, #38bdf8, #a855f7);
-      -webkit-background-clip: text;
-      color: transparent;
-    }
+  .insights {
+    font-size:14px;
+    color:var(--text-soft);
+    margin-top:10px;
+    line-height:1.6;
+  }
+</style>
 
-    .subtitle {
-      margin-top: 6px;
-      font-size: 14px;
-      color: var(--text-soft);
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1.2fr 1.4fr;
-      gap: 14px;
-      margin-top: 20px;
-    }
-
-    @media (max-width: 900px) {
-      .grid-2 { grid-template-columns: 1fr; }
-    }
-
-    .card {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 14px 16px 16px;
-      border: 1px solid #1f2937;
-    }
-
-    .card-title {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-
-    .gauge {
-      position: relative;
-      width: 100%;
-      max-width: 320px;
-      height: 160px;
-      margin: 10px auto 4px;
-    }
-
-    .gauge svg {
-      width: 100%;
-      height: 100%;
-    }
-
-    .gauge-label {
-      text-align: center;
-      font-size: 14px;
-      margin-top: 4px;
-    }
-
-    .risk-badge {
-      display: inline-block;
-      margin-top: 6px;
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-size: 11px;
-    }
-
-    .low { background: rgba(34,197,94,0.18); color: #bbf7d0; }
-    .med { background: rgba(250,204,21,0.18); color: #fef9c3; }
-    .high { background: rgba(248,113,113,0.2); color: #fee2e2; }
-
-    .risk-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 8px;
-      font-size: 11px;
-    }
-
-    .risk-table th, .risk-table td {
-      border-bottom: 1px solid #1f2937;
-      padding: 6px 6px;
-      text-align: left;
-    }
-
-    .risk-table th {
-      color: var(--text-soft);
-      font-weight: 600;
-    }
-
-    .risk-score {
-      text-align: right;
-    }
-  </style>
 </head>
 
 <body>
-  <div class="app">
-    <!-- NAVBAR -->
-    <header class="nav">
-      <div class="nav-logo">
-        <div class="nav-logo-badge">
-          <div class="nav-logo-inner">SC</div>
-        </div>
-        <div>
-          <div class="nav-title">SupplyChain Intelligence App</div>
-          <div class="nav-sub">Inventory · Risk · Network</div>
-        </div>
-      </div>
-      <nav class="nav-links">
-        <a href="index.html">Dashboard</a>
-        <a href="inventory.html">Inventory</a>
-        <a href="map.html">Logistics Map</a>
-        <a href="simulation.html">Simulation</a>
-        <a href="risk.html" class="active">Risk</a>
-        <a href="abc.html">ABC</a>
-      </nav>
-    </header>
 
-    <h1>Advanced Risk Dashboard</h1>
-    <p class="subtitle">
-      Composite score combining stockout, lead time, demand volatility and financial impact.
-    </p>
+<!-- NAV -->
+<nav>
+  <a href="index.html">Dashboard</a>
+  <a href="inventory.html">Inventory</a>
+  <a href="map.html">Network Map</a>
+  <a href="simulation.html">Simulation</a>
+  <a href="risk.html">Risk</a>
+  <a href="abc.html">ABC</a>
+</nav>
 
-    <div class="grid-2">
-      <!-- LEFT: GLOBAL GAUGE -->
-      <section class="card">
-        <div class="card-title">Global Supply Chain Risk Score</div>
-        <div class="gauge">
-          <svg viewBox="0 0 100 50">
-            <!-- background arc -->
-            <path d="M10 50 A40 40 0 0 1 90 50"
-                  stroke="#1f2937"
-                  stroke-width="8"
-                  fill="none" />
-            <!-- risk arc (dynamic via JS) -->
-            <path id="riskArc"
-                  d="M10 50 A40 40 0 0 1 90 50"
-                  stroke="#f97316"
-                  stroke-width="8"
-                  stroke-linecap="round"
-                  fill="none"
-                  stroke-dasharray="0 251" />
-          </svg>
-        </div>
-        <div class="gauge-label">
-          Global risk: <strong id="riskValue">–</strong> / 100
-          <div id="riskLabel" class="risk-badge">–</div>
-        </div>
-      </section>
+<div class="container">
 
-      <!-- RIGHT: BREAKDOWN -->
-      <section class="card">
-        <div class="card-title">Risk Breakdown · Inventory / Logistics / Finance</div>
-        <table class="risk-table" id="riskTable">
-          <thead>
-            <tr>
-              <th>Dimension</th>
-              <th>Main drivers</th>
-              <th class="risk-score">Score</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </section>
+  <h1>Risk Dashboard</h1>
+  <p class="subtitle">Integrated operational, financial and network exposure</p>
+
+  <!-- GLOBAL RISK SCORE -->
+  <div class="card">
+    <div class="card-title">Overall Supply Chain Risk</div>
+
+    <div class="kpi" id="globalRiskCard">
+      <div class="kpi-value" id="globalRiskValue">--</div>
+      <div id="globalRiskTag" class="tag"></div>
     </div>
   </div>
 
-  <script>
-    // Simple risk model with 3 main dimensions
-    const dimensions = [
-      {
-        name: "Inventory & stockout",
-        drivers: "Number of SKUs with chronic stockouts, safety stock coverage, service level.",
-        score: 34
-      },
-      {
-        name: "Logistics & lead time",
-        drivers: "Variability in lead times, OTIF performance, route disruptions.",
-        score: 28
-      },
-      {
-        name: "Financial & cost",
-        drivers: "Inventory holding cost, obsolete stock, express freight usage.",
-        score: 22
-      }
-    ];
+  <!-- CATEGORY RISK -->
+  <div class="card">
+    <div class="card-title">Risk Dimensions</div>
 
-    const maxScore = 100;
+    <div class="grid-2">
 
-    function renderRiskTable() {
-      const tbody = document.querySelector("#riskTable tbody");
-      tbody.innerHTML = "";
-      let total = 0;
+      <div class="node-box">
+        <div class="node-name">Operational Risk</div>
+        <div id="opRiskValue" class="kpi-value">--</div>
+        <div id="opRiskTag" class="tag"></div>
+      </div>
 
-      dimensions.forEach(dim => {
-        total += dim.score;
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${dim.name}</td>
-          <td>${dim.drivers}</td>
-          <td class="risk-score">${dim.score}</td>
-        `;
-        tbody.appendChild(tr);
-      });
+      <div class="node-box">
+        <div class="node-name">Financial Risk</div>
+        <div id="finRiskValue" class="kpi-value">--</div>
+        <div id="finRiskTag" class="tag"></div>
+      </div>
 
-      const globalRisk = Math.min(total, maxScore);
-      drawGauge(globalRisk);
-    }
+      <div class="node-box">
+        <div class="node-name">Network Risk</div>
+        <div id="netRiskValue" class="kpi-value">--</div>
+        <div id="netRiskTag" class="tag"></div>
+      </div>
 
-    function drawGauge(score) {
-      const maxDash = 126; // half of full circle baseline
-      const fraction = score / 100;
-      const dash = maxDash * fraction;
-      const riskArc = document.getElementById("riskArc");
-      riskArc.setAttribute("stroke-dasharray", `${dash} 251`);
+      <div class="node-box">
+        <div class="node-name">Demand Variability Risk</div>
+        <div id="varRiskValue" class="kpi-value">--</div>
+        <div id="varRiskTag" class="tag"></div>
+      </div>
 
-      let color = "#22c55e";
-      let label = "Low";
-      let cssClass = "risk-badge low";
-      if (score > 70) {
-        color = "#fb7185";
-        label = "High";
-        cssClass = "risk-badge high";
-      } else if (score > 40) {
-        color = "#eab308";
-        label = "Medium";
-        cssClass = "risk-badge med";
-      }
-      riskArc.setAttribute("stroke", color);
-      document.getElementById("riskValue").textContent = score.toFixed(0);
-      const riskLabel = document.getElementById("riskLabel");
-      riskLabel.textContent = `${label} risk`;
-      riskLabel.className = cssClass;
-    }
+    </div>
+  </div>
 
-    renderRiskTable();
-  </script>
+  <!-- INSIGHTS -->
+  <div class="card">
+    <div class="card-title">Insights & Commentary</div>
+    <div id="insightBox" class="insights"></div>
+  </div>
+
+</div>
+
+<script src="data.js"></script>
+
+<script>
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function tagColor(score) {
+  if (score < 30) return "green";
+  if (score < 60) return "yellow";
+  return "red";
+}
+function tagLabel(score) {
+  if (score < 30) return "LOW";
+  if (score < 60) return "MEDIUM";
+  return "HIGH";
+}
+
+/* ============================================================
+   MAIN RISK ENGINE
+   ============================================================ */
+function calculateRisk() {
+
+  /* ----- NETWORK RISK (from nodes) ----- */
+  const netRisks = Object.values(NetworkNodes).map(n => n.risk);
+  const networkRisk = (netRisks.reduce((a,b)=>a+b,0) / netRisks.length) * 100;
+
+  /* ----- VARIABILITY RISK (from SKUs) ----- */
+  const stdList = SKUs.map(s => s.demandStd);
+  const avgStd = stdList.reduce((a,b)=>a+b) / stdList.length;
+  const varRisk = Math.min(100, avgStd * 10); // scaled
+
+  /* ----- FINANCIAL RISK (value-weighted inventory costs) ----- */
+  const portfolioValue = SKUs.reduce((sum, s) => sum + s.unitCost * s.demandAnnual, 0);
+  const finRisk = Math.min(100, portfolioValue / 50000); // scaled
+
+  /* ----- OPERATIONAL RISK (LT + variability + replenishment complexity) ----- */
+  const avgLT = SKUs.reduce((sum, s) => sum + s.leadTime, 0) / SKUs.length;
+  const opRisk = Math.min(100, (avgLT * 3) + varRisk * 0.3);
+
+  /* ----- GLOBAL RISK (weighted) ----- */
+  const globalRisk = (
+    opRisk * 0.35 +
+    finRisk * 0.20 +
+    networkRisk * 0.30 +
+    varRisk * 0.15
+  );
+
+  return {
+    globalRisk,
+    networkRisk,
+    varRisk,
+    finRisk,
+    opRisk
+  };
+}
+
+/* ============================================================
+   RENDER PAGE
+   ============================================================ */
+function render() {
+  const r = calculateRisk();
+
+  /* Global Risk */
+  document.getElementById("globalRiskValue").textContent = r.globalRisk.toFixed(0);
+  document.getElementById("globalRiskTag").textContent = tagLabel(r.globalRisk);
+  document.getElementById("globalRiskTag").classList.add(tagColor(r.globalRisk));
+
+  /* Operational */
+  document.getElementById("opRiskValue").textContent = r.opRisk.toFixed(0);
+  document.getElementById("opRiskTag").textContent = tagLabel(r.opRisk);
+  document.getElementById("opRiskTag").classList.add(tagColor(r.opRisk));
+
+  /* Financial */
+  document.getElementById("finRiskValue").textContent = r.finRisk.toFixed(0);
+  document.getElementById("finRiskTag").textContent = tagLabel(r.finRisk);
+  document.getElementById("finRiskTag").classList.add(tagColor(r.finRisk));
+
+  /* Network */
+  document.getElementById("netRiskValue").textContent = r.networkRisk.toFixed(0);
+  document.getElementById("netRiskTag").textContent = tagLabel(r.networkRisk);
+  document.getElementById("netRiskTag").classList.add(tagColor(r.networkRisk));
+
+  /* Variability */
+  document.getElementById("varRiskValue").textContent = r.varRisk.toFixed(0);
+  document.getElementById("varRiskTag").textContent = tagLabel(r.varRisk);
+  document.getElementById("varRiskTag").classList.add(tagColor(r.varRisk));
+
+  /* Insights */
+  document.getElementById("insightBox").innerHTML = `
+    • The global supply chain risk is currently classified as <strong>${tagLabel(r.globalRisk)}</strong>.<br><br>
+    • Network exposure is at <strong>${r.networkRisk.toFixed(0)}%</strong>, driven mainly by factory and DC instability.<br><br>
+    • Demand variability contributes <strong>${r.varRisk.toFixed(0)}%</strong> to the overall risk profile.<br><br>
+    • The estimated financial exposure of the portfolio indicates a medium-to-high sensitivity to stockouts.<br><br>
+    • Operational risk remains elevated due to extended lead times across several SKU categories.
+  `;
+}
+
+/* START APP */
+render();
+</script>
+
 </body>
 </html>
