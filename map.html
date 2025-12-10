@@ -1,436 +1,286 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>SupplyChain Intelligence · Logistics Map</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SupplyChain Intelligence · Logistics Network Map</title>
 
-  <style>
-    :root {
-      --bg: #020617;
-      --card: #0f172a;
-      --soft: #111827;
-      --accent: #38bdf8;
-      --accent2: #22c55e;
-      --accent3: #facc15;
-      --danger: #fb7185;
-      --text: #e5e7eb;
-      --text-soft: #9ca3af;
-      --radius: 18px;
-      --radius-sm: 10px;
-      --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
+<style>
+  :root {
+    --bg: #0a0f1c;
+    --card: #131b2f;
+    --soft: #1c2640;
+    --accent: #38bdf8;
+    --accent2: #34d399;
+    --warn: #facc15;
+    --danger: #fb7185;
+    --text: #e2e8f0;
+    --text-soft: #94a3b8;
+    --radius: 18px;
+    --radius-sm: 10px;
+    --font: system-ui, sans-serif;
+  }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { margin:0; padding:0; box-sizing:border-box; font-family:var(--font); }
 
-    body {
-      min-height: 100vh;
-      background: radial-gradient(circle at top, #020617 0, #000 60%);
-      color: var(--text);
-      font-family: var(--font);
-      display: flex;
-      justify-content: center;
-    }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    padding-bottom: 50px;
+  }
 
-    .app {
-      width: 100%;
-      max-width: 1100px;
-      padding: 18px 16px 40px;
-    }
+  /* NAV BAR */
+  nav {
+    width: 100%;
+    background: var(--card);
+    padding: 14px;
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    position: sticky;
+    top: 0;
+    z-index: 99;
+    border-bottom: 1px solid #1e293b;
+  }
+  nav a {
+    color: var(--text-soft);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  nav a:hover { color: var(--accent); }
 
-    .nav {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 18px;
-    }
+  .container {
+    max-width: 960px;
+    margin: auto;
+    padding: 20px;
+  }
 
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+  h1 {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 6px;
+    background: linear-gradient(to right, #38bdf8, #a855f7, #f97316);
+    -webkit-background-clip: text;
+    color: transparent;
+  }
 
-    .nav-logo-badge {
-      width: 40px;
-      height: 40px;
-      border-radius: 14px;
-      background: conic-gradient(from 180deg, #38bdf8, #a855f7, #f97316, #38bdf8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 18px rgba(56,189,248,0.7);
-    }
+  .subtitle {
+    text-align:center;
+    font-size:14px;
+    color:var(--text-soft);
+    margin-bottom:20px;
+  }
 
-    .nav-logo-inner {
-      width: 32px;
-      height: 32px;
-      border-radius: 12px;
-      background: radial-gradient(circle at 30% 0, #e5e7eb, #020617);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-    }
 
-    .nav-title {
-      font-size: 18px;
-      font-weight: 650;
-    }
+  /* NETWORK MAP */
+  .map-container {
+    margin-top: 28px;
+    background: var(--card);
+    padding: 20px;
+    border-radius: var(--radius);
+    border: 1px solid #1e293b;
+    position: relative;
+  }
 
-    .nav-sub {
-      font-size: 11px;
-      color: var(--text-soft);
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-    }
+  .nodes {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 26px;
+    position: relative;
+  }
 
-    .nav-links {
-      margin-left: auto;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      font-size: 12px;
-    }
+  .node {
+    width: 120px;
+    height: 120px;
+    background: var(--soft);
+    border-radius: var(--radius);
+    border: 2px solid #1e293b;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align:center;
+    padding: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
 
-    .nav-links a {
-      color: var(--text-soft);
-      text-decoration: none;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(15,23,42,0.85);
-      border: 1px solid #1f2937;
-    }
+  .node:hover {
+    transform: scale(1.05);
+    border-color: var(--accent);
+  }
 
-    .nav-links a.active {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
+  /* Risk coloring */
+  .low { box-shadow: 0 0 8px rgba(34,197,94,0.5); }
+  .medium { box-shadow: 0 0 8px rgba(250,204,21,0.5); }
+  .high { box-shadow: 0 0 8px rgba(248,113,113,0.5); }
 
-    h1 {
-      font-size: 26px;
-      margin-top: 4px;
-      background: linear-gradient(to right, #38bdf8, #a855f7);
-      -webkit-background-clip: text;
-      color: transparent;
-    }
+  /* FLOW ARROW */
+  .arrow {
+    width: 80px;
+    height: 5px;
+    background: var(--accent);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    animation: flow 1.5s infinite linear;
+  }
 
-    .subtitle {
-      margin-top: 6px;
-      font-size: 14px;
-      color: var(--text-soft);
-    }
+  .arrow-1 { left: 130px; }
+  .arrow-2 { left: 360px; }
+  .arrow-3 { left: 590px; }
 
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1.6fr 1fr;
-      gap: 14px;
-      margin-top: 20px;
-    }
+  @keyframes flow {
+    0% { width: 0px; opacity: 0.5; }
+    50% { width: 80px; opacity: 1; }
+    100% { width: 0px; opacity: 0.5; }
+  }
 
-    @media (max-width: 900px) {
-      .grid-2 {
-        grid-template-columns: 1fr;
-      }
-    }
+  /* DETAILS PANEL */
+  .details {
+    margin-top: 26px;
+    padding: 16px;
+    background: var(--soft);
+    border: 1px solid #24314d;
+    border-radius: var(--radius-sm);
+  }
 
-    .card {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 14px 16px 16px;
-      border: 1px solid #1f2937;
-    }
+  .tag {
+    padding:4px 10px;
+    border-radius:999px;
+    width:fit-content;
+    font-size:12px;
+    margin-bottom:8px;
+  }
 
-    .card-title {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
+  .tag.green { background:rgba(34,197,94,0.15); color:#bbf7d0; }
+  .tag.yellow { background:rgba(250,204,21,0.15); color:#fef9c3; }
+  .tag.red { background:rgba(248,113,113,0.15); color:#fee2e2; }
 
-    .map {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      margin-top: 8px;
-    }
+  .row {
+    display:flex;
+    justify-content:space-between;
+    margin-top:4px;
+  }
 
-    .map-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+  .label { color:var(--text-soft); }
+  .value { font-weight:600; }
+</style>
 
-    .node {
-      flex: 1;
-      min-width: 120px;
-      padding: 10px;
-      border-radius: 16px;
-      background: var(--soft);
-      border: 1px solid #1f2937;
-      cursor: pointer;
-      position: relative;
-      transition: transform 0.16s ease-out, box-shadow 0.16s ease-out, border-color 0.16s ease-out;
-    }
-
-    .node span {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .node small {
-      display: block;
-      font-size: 11px;
-      color: var(--text-soft);
-      margin-top: 2px;
-    }
-
-    .node.active {
-      border-color: var(--accent);
-      box-shadow: 0 0 20px rgba(56,189,248,0.4);
-      transform: translateY(-2px);
-    }
-
-    .node::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      border: 1px solid rgba(56,189,248,0.3);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.16s ease-out;
-    }
-
-    .node.active::after { opacity: 1; }
-
-    .arrow {
-      font-size: 20px;
-      color: var(--accent);
-    }
-
-    .risk-badge {
-      display: inline-block;
-      margin-top: 4px;
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-size: 11px;
-    }
-
-    .low { background: rgba(34,197,94,0.18); color: #bbf7d0; }
-    .med { background: rgba(250,204,21,0.18); color: #fef9c3; }
-    .high { background: rgba(248,113,113,0.2); color: #fee2e2; }
-
-    .detail-item {
-      margin-top: 6px;
-      font-size: 12px;
-      color: var(--text-soft);
-    }
-
-    .detail-item strong { color: var(--text); }
-
-  </style>
 </head>
 
 <body>
-  <div class="app">
-    <!-- NAVBAR -->
-    <header class="nav">
-      <div class="nav-logo">
-        <div class="nav-logo-badge">
-          <div class="nav-logo-inner">SC</div>
-        </div>
-        <div>
-          <div class="nav-title">SupplyChain Intelligence App</div>
-          <div class="nav-sub">Inventory · Risk · Network</div>
-        </div>
-      </div>
-      <nav class="nav-links">
-        <a href="index.html">Dashboard</a>
-        <a href="inventory.html">Inventory</a>
-        <a href="map.html" class="active">Logistics Map</a>
-        <a href="simulation.html">Simulation</a>
-        <a href="risk.html">Risk</a>
-        <a href="abc.html">ABC</a>
-      </nav>
-    </header>
 
-    <h1>Interactive Logistics Network Map</h1>
-    <p class="subtitle">
-      Click any node in the chain to see its KPIs and contribution to overall risk.
-    </p>
+<!-- NAV -->
+<nav>
+  <a href="index.html">Dashboard</a>
+  <a href="inventory.html">Inventory</a>
+  <a href="map.html">Network Map</a>
+  <a href="simulation.html">Simulation</a>
+  <a href="risk.html">Risk</a>
+  <a href="abc.html">ABC</a>
+</nav>
 
-    <div class="grid-2">
-      <!-- LEFT: MAP -->
-      <section class="card">
-        <div class="card-title">Physical flow · Supplier → Factory → DC → Store → Customer</div>
-        <div class="map">
-          <div class="map-row">
-            <div class="node" data-node="supplier">
-              <span>Supplier</span>
-              <small>Raw materials & components</small>
-              <span class="risk-badge low">Low risk</span>
-            </div>
-            <div class="arrow">➜</div>
-            <div class="node" data-node="factory">
-              <span>Factory</span>
-              <small>Assembly & production</small>
-              <span class="risk-badge med">Medium risk</span>
-            </div>
-            <div class="arrow">➜</div>
-            <div class="node" data-node="dc">
-              <span>Central DC</span>
-              <small>Inventory concentration</small>
-              <span class="risk-badge high">High risk</span>
-            </div>
-          </div>
-          <div class="map-row">
-            <div class="node" data-node="store">
-              <span>Urban Store</span>
-              <small>Last-mile availability</small>
-              <span class="risk-badge med">Medium risk</span>
-            </div>
-            <div class="arrow">➜</div>
-            <div class="node" data-node="customer">
-              <span>Customer</span>
-              <small>Service level & returns</small>
-              <span class="risk-badge low">Low risk</span>
-            </div>
-          </div>
-        </div>
-      </section>
+<div class="container">
 
-      <!-- RIGHT: DETAILS -->
-      <section class="card">
-        <div class="card-title">Node KPIs & Risk Contribution</div>
-        <div class="detail-item">
-          <strong>Node:</strong> <span id="dNode">–</span>
-        </div>
-        <div class="detail-item">
-          <strong>Role in the network:</strong> <span id="dRole">–</span>
-        </div>
-        <div class="detail-item">
-          <strong>Typical KPIs:</strong>
-          <ul id="dKpis" style="margin-left:16px; margin-top:4px;"></ul>
-        </div>
-        <div class="detail-item">
-          <strong>Risk level:</strong> <span id="dRiskLabel">–</span>
-        </div>
-        <div class="detail-item">
-          <strong>How it affects inventory:</strong>
-          <p id="dImpact">–</p>
-        </div>
-      </section>
+  <h1>Logistics Network Map</h1>
+  <p class="subtitle">Interactive risk visualization across the end-to-end supply chain</p>
+
+  <!-- MAP -->
+  <div class="map-container">
+
+    <div class="nodes">
+
+      <div id="supplier" class="node">Supplier</div>
+      <div class="arrow arrow-1"></div>
+
+      <div id="factory" class="node">Factory</div>
+      <div class="arrow arrow-2"></div>
+
+      <div id="dc" class="node">Distribution Center</div>
+      <div class="arrow arrow-3"></div>
+
+      <div id="store" class="node">Store</div>
+
     </div>
   </div>
 
-  <script>
-    const nodesData = {
-      supplier: {
-        name: "Supplier",
-        role: "Provides critical components and raw materials.",
-        kpis: [
-          "Inbound OTIF",
-          "Lead time reliability",
-          "MOQ flexibility",
-          "Quality incidents"
-        ],
-        riskLabel: "Low (most suppliers diversified)",
-        impact: "Unreliable suppliers force higher safety stock across the chain " +
-                "or lead to production stops, depending on dual-sourcing strategy."
-      },
-      factory: {
-        name: "Factory",
-        role: "Transforms components into finished goods.",
-        kpis: [
-          "Capacity utilization",
-          "Production cycle time",
-          "Schedule adherence",
-          "Scrap rate"
-        ],
-        riskLabel: "Medium (bottlenecks in one line)",
-        impact: "If production is unstable, planners compensate with additional " +
-                "finished goods inventory at the DC to protect customer service."
-      },
-      dc: {
-        name: "Central DC",
-        role: "Aggregates and dispatches inventory to multiple markets.",
-        kpis: [
-          "Inventory accuracy",
-          "Order cycle time",
-          "Fill rate",
-          "Pick/pack productivity"
-        ],
-        riskLabel: "High (inventory and service concentration)",
-        impact: "The DC defines the real service level: poor DC execution leads to " +
-                "stockouts in stores even if total stock exists, increasing lost sales."
-      },
-      store: {
-        name: "Urban Store",
-        role: "Final availability point before the end customer.",
-        kpis: [
-          "On-shelf availability",
-          "Sell-through rate",
-          "Shrinkage",
-          "Local forecast accuracy"
-        ],
-        riskLabel: "Medium (demand variability, limited storage)",
-        impact: "Highly variable local demand means stores depend heavily on " +
-                "replenishment frequency and DC performance to avoid stockouts."
-      },
-      customer: {
-        name: "Customer",
-        role: "Receives products and experiences the final service level.",
-        kpis: [
-          "Order fill rate",
-          "On-time delivery",
-          "Return rate",
-          "Net Promoter Score (NPS)"
-        ],
-        riskLabel: "Low (result of upstream performance)",
-        impact: "Customer perception consolidates all upstream performance. " +
-                "Chronic issues can lead to lost loyalty and long-term revenue impact."
-      }
-    };
+  <div id="detailsPanel" class="details" style="display:none;"></div>
 
-    const nodes = document.querySelectorAll(".node");
-    const dNode = document.getElementById("dNode");
-    const dRole = document.getElementById("dRole");
-    const dKpis = document.getElementById("dKpis");
-    const dRiskLabel = document.getElementById("dRiskLabel");
-    const dImpact = document.getElementById("dImpact");
+</div>
 
-    function selectNode(key) {
-      const data = nodesData[key];
-      if (!data) return;
+<script src="data.js"></script>
 
-      nodes.forEach(n => n.classList.remove("active"));
-      const active = document.querySelector(`.node[data-node="${key}"]`);
-      if (active) active.classList.add("active");
+<script>
+/* ===============================================
+   LOAD NODES + MAKE THEM CLICKABLE
+   =============================================== */
 
-      dNode.textContent = data.name;
-      dRole.textContent = data.role;
-      dRiskLabel.textContent = data.riskLabel;
-      dImpact.textContent = data.impact;
+function getRiskTag(score) {
+  if (score < 0.30) return "green";
+  if (score < 0.50) return "yellow";
+  return "red";
+}
 
-      dKpis.innerHTML = "";
-      data.kpis.forEach(k => {
-        const li = document.createElement("li");
-        li.textContent = k;
-        dKpis.appendChild(li);
-      });
+function getRiskLabel(score) {
+  if (score < 0.30) return "LOW";
+  if (score < 0.50) return "MEDIUM";
+  return "HIGH";
+}
+
+/* Attach risk colors to node cards */
+function applyNodeStyles() {
+  for (const key in NetworkNodes) {
+    const node = NetworkNodes[key];
+    const el = document.getElementById(key);
+    if (!el) continue;
+    el.classList.add(node.status);
+  }
+}
+
+applyNodeStyles();
+
+/* Handle node click */
+function showDetails(nodeKey) {
+  const n = NetworkNodes[nodeKey];
+  const panel = document.getElementById("detailsPanel");
+
+  const riskScore = n.risk;
+  const tag = getRiskTag(riskScore);
+  const label = getRiskLabel(riskScore);
+
+  /* Build risk breakdown */
+  let extra = "";
+  for (const k in n) {
+    if (k.includes("Risk")) {
+      extra += `
+        <div class="row">
+          <span class="label">${k.replace("Risk", " Risk")}</span>
+          <span class="value">${(n[k]*100).toFixed(0)}%</span>
+        </div>`;
     }
+  }
 
-    nodes.forEach(n => {
-      n.addEventListener("click", () => {
-        const key = n.getAttribute("data-node");
-        selectNode(key);
-      });
-    });
+  panel.style.display = "block";
+  panel.innerHTML = `
+    <h3>${n.name}</h3>
+    <div class="tag ${tag}">${label} risk</div>
 
-    // Default selection
-    selectNode("dc");
-  </script>
+    <div class="row">
+      <span class="label">Overall Risk</span>
+      <span class="value">${(riskScore*100).toFixed(0)}%</span>
+    </div>
+
+    ${extra}
+  `;
+}
+
+/* Add click listeners */
+document.getElementById("supplier").onclick = () => showDetails("supplier");
+document.getElementById("factory").onclick = () => showDetails("factory");
+document.getElementById("dc").onclick = () => showDetails("dc");
+document.getElementById("store").onclick = () => showDetails("store");
+</script>
+
 </body>
 </html>
